@@ -17,7 +17,7 @@ public class LocationHandler extends Observable implements LocationListener {
     private LocationManager lm;
     private MainActivity act;
 
-    public LocationHandler(MainActivity act){
+    public LocationHandler(GameActivity act){
         this.act = act;
         this.lm = (LocationManager) this.act.getSystemService(Context.LOCATION_SERVICE);
         if(this.act.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
