@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
             @Override
             public void onClick(View view) {
-                // TODO: check if camera has flashlight
+                // check if camera has flashlight
                 if (hasCameraFlash) {
                     if (flashLightStatus)
                         flashLightOff();
@@ -86,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 }
             }
         });
+
+        if(flashLightStatus){
+            // TODO: ghost interaction
+            // look through list of ghosts
+        }
     }
 
     public boolean isPermissions_granted() {
