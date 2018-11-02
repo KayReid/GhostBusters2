@@ -24,8 +24,10 @@ public class MainFragment extends Fragment {
 
     private OnFragmentInteractionListener FIListener;
 
+    // constructor
     public MainFragment() {
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,17 +49,15 @@ public class MainFragment extends Fragment {
                         new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.about_title_text);
                 builder.setMessage(R.string.about);
-                AlertDialog.Builder builder1 = builder.setPositiveButton(R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                            }
-                        });
+                AlertDialog.Builder builder1 = builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // click
+                    }
+                });
                 builder.show();
             }
         });
-
 
         return rootView;
     }
