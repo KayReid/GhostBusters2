@@ -19,7 +19,7 @@ import java.util.Objects;
 
 public class MainFragment extends Fragment {
 
-    public static final String PREF_NAME = "MontyHall";
+    public static final String PREF_NAME = "GhostBusters";
     public static final String NEW_CLICKED = "NEWCLICKED";
 
     private OnFragmentInteractionListener FIListener;
