@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ghosts"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".MainFragment">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fontFamily="@font/BLOODY"
+        android:shadowColor="@color/redFifty"
+        android:text="@string/title"
+        android:textColor="@color/redTen"
+        android:textSize="55sp" />
+
+    <Button
+        android:id="@+id/about_button"
+        android:layout_width="325dp"
+        android:layout_height="78dp"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"
+        android:backgroundTint="@color/redTwenty"
+        android:padding="10dp"
+        android:text="@string/about_text"
+        android:fontFamily="@font/BLOODY"
+        android:textSize="40sp"/>
+
+    <Button
+        android:id="@+id/new_button"
+        android:layout_width="321dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:backgroundTint="@color/redThirty"
+        android:fontFamily="@font/BLOODY"
+        android:padding="15dp"
+        android:text="@string/Single_Player"
+        android:textSize="40sp" />
+
+
+    <Button
+        android:id="@+id/continue_button"
+        android:layout_width="330dp"
+        android:layout_height="78dp"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:backgroundTint="@color/redForty"
+        android:fontFamily="@font/BLOODY"
+        android:padding="15dp"
+        android:text="@string/Multi_player"
+        android:textSize="40sp" />
+
+
+</LinearLayout>
