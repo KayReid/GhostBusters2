@@ -1,6 +1,5 @@
 package edu.stlawu.ghostbusters;
 //test
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
