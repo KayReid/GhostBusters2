@@ -1,6 +1,7 @@
 package edu.stlawu.ghostbusters;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -15,9 +16,9 @@ import java.util.Observable;
 public class LocationHandler extends Observable implements LocationListener {
 
     private LocationManager lm;
-    private MainActivity act;
+    private Activity act;
 
-    public LocationHandler(GameActivity act){
+    public LocationHandler(Activity act){
         this.act = act;
         this.lm = (LocationManager) this.act.getSystemService(Context.LOCATION_SERVICE);
         if(this.act.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
