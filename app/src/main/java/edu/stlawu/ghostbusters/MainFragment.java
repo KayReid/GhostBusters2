@@ -16,12 +16,14 @@ import android.view.ViewGroup;
 
 import java.util.Objects;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class MainFragment extends Fragment {
 
     public static final String PREF_NAME = "GhostBusters";
     public static final String NEW_CLICKED = "NEWCLICKED";
-
-    private OnFragmentInteractionListener FIListener;
+    public static final String  CONTINUE = "CONTINUECLICKED";
+    private OnFragmentInteractionListener mListener;
 
     // constructor
     public MainFragment() {
@@ -38,43 +40,93 @@ public class MainFragment extends Fragment {
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
+        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         View aboutButton = rootView.findViewById(R.id.about_button);
         aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder =
-                        new AlertDialog.Builder(getActivity());
-                builder.setTitle(R.string.about_title_text);
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(R.string.title);
                 builder.setMessage(R.string.about);
-                AlertDialog.Builder builder1 = builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // click
+                        return;
                     }
                 });
                 builder.show();
             }
         });
 
+        View continueButton = rootView.findViewById(R.id.continue_button);
+        continueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor pref_ed = getActivity().getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit();
+                pref_ed.putBoolean(NEW_CLICKED, false).apply();
+                pref_ed.putBoolean(CONTINUE, true).apply();
+
+                // getActivity().getPreferences(MODE_PRIVATE).edit().putInt("win_count", 0).apply();
+                // getActivity().getPreferences(MODE_PRIVATE).edit().putInt("loss_count", 0).apply();
+
+                Intent intent = new Intent(getActivity(), GameActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
+        View newButton = rootView.findViewById(R.id.new_button);
+        newButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor pref_ed = getActivity().getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit();
+                pref_ed.putBoolean(NEW_CLICKED, true).apply();
+
+                Intent intent = new Intent(getActivity(), GameActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
         return rootView;
+    }
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            FIListener = (OnFragmentInteractionListener) context;
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
     @Override
     public void onDetach() {
         super.onDetach();
-        FIListener = null;
+        mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 }
