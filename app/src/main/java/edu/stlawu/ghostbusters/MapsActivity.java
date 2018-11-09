@@ -1,5 +1,6 @@
 package edu.stlawu.ghostbusters;
 
+import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -104,14 +105,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Random r = new Random();
             double ghostLat = minLat + (maxLat - minLat) * r.nextDouble();
             double ghostLon = minLon + (maxLon - minLon) * r.nextDouble();
-            LatLng ghost = new LatLng(ghostLat, ghostLon);
+            LatLng ghostMarker = new LatLng(ghostLat, ghostLon);
+
 
             // TODO: Check if ghost is within the bounds of the polygon
             // Add ghost onto map
-            SLUMap.addMarker(new MarkerOptions().position(ghost));
+            SLUMap.addMarker(new MarkerOptions().position(ghostMarker));
+
+            Location ghostLocation = new Location("labghost");
+            ghostLocation.setLatitude(ghostLat);
+            ghostLocation.setLongitude(ghostLon);
+            Ghost ghost = new Ghost(ghostLocation);
 
             // Get coordinates
-            System.out.println(ghost);
+            System.out.println(ghost.getLocation());
         }
     }
 
