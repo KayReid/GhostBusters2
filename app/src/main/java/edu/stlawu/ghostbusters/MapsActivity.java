@@ -107,13 +107,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng ghost = new LatLng(ghostLat, ghostLon);
 
             // TODO: Check if ghost is within the bounds of the polygon
-            //if(SLUpolygon.Contains(ghost))
             // Add ghost onto map
             SLUMap.addMarker(new MarkerOptions().position(ghost));
 
             // Get coordinates
             System.out.println(ghost);
-            //System.out.println(ghostLon);
         }
     }
 
