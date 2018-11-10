@@ -2,25 +2,18 @@
     <string name="app_name">GhostBusters</string>
     <string name="flashlight">Flashlight</string>
     <string name="title">Ghost Busters</string>
-    <string name="Multi_player">Multiplayer</string>
-    <string name="Single_Player">Single Player</string>
+    <string name="multi_player">Multiplayer</string>
+    <string name="single_Player">Single Player</string>
     <string name="about_text">About</string>
     <string name="about">
 
         How it works:
-        In search of a new car,
-        the player picks a door, say 1.
-        The game host then opens one of the other doors, say 3, to
-        reveal a goat and offers to let the player switch from door 1 to door 2. - https://en.wikipedia.org/wiki/Monty_Hall_problem
+        Ghosts have haunted campus!
+        Get on your feet and capture them using the flashlight button on your screen when they pop up on your screen!
+
     </string>
     <string name="about_title_text">Ghost Busters</string>
     <string name="ok">OK</string>
-    <string name="choose_a_door">Select a door</string>
-    <string name="win_Door" />
-    <string name="selected_door" />
-    <string name="goat_door" />
-    <string name="win_count" />
-    <string name="loss_count" />
     <string name="again">play again</string>
     <string name="title_activity_maps">Map</string>
 

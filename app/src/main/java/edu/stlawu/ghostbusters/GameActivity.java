@@ -9,6 +9,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +22,7 @@ import android.widget.Toast;
 import java.util.Observable;
 import java.util.Observer;
 
-public class GameActivity extends AppCompatActivity implements Observer {
+public class GameActivity extends AppCompatActivity implements Observer, MainFragment.OnFragmentInteractionListener{
 
     private final static int PERMISSION_REQUEST_CODE = 999;
     private final static String LOGTAG = MainActivity.class.getSimpleName();
@@ -38,10 +39,13 @@ public class GameActivity extends AppCompatActivity implements Observer {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_game);
 
         screen = findViewById(R.id.screen);
         flashlightButton = findViewById(R.id.flashlight);
+        if (flashlightButton == null){
+            Log.i(LOGTAG, "Flashlight is null. FUCK!");
+        }
 
         if (handler == null) {
             this.handler = new LocationHandler(this);
@@ -60,7 +64,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(GameActivity.this, new String[] {Manifest.permission.CAMERA}, PERMISSION_REQUEST_CODE);
         }
-
 
         // TODO: set these
         Double labGhostLat = 44.587783573;
@@ -160,5 +163,10 @@ public class GameActivity extends AppCompatActivity implements Observer {
     // returns distance in meters
     public double findDistance(Location location1, Location location2){
         return location1.distanceTo(location2);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

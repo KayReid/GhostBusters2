@@ -21,8 +21,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class MainFragment extends Fragment {
 
     public static final String PREF_NAME = "GhostBusters";
-    public static final String NEW_CLICKED = "NEWCLICKED";
-    public static final String  CONTINUE = "CONTINUECLICKED";
+    public static final String SINGLE = "SINGLE";
+    public static final String  MULTI = "MULTI";
     private OnFragmentInteractionListener mListener;
 
     // constructor
@@ -60,29 +60,29 @@ public class MainFragment extends Fragment {
             }
         });
 
-        View continueButton = rootView.findViewById(R.id.continue_button);
-        continueButton.setOnClickListener(new View.OnClickListener() {
+        View singleButton = rootView.findViewById(R.id.single_button);
+        singleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor pref_ed = getActivity().getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit();
-                pref_ed.putBoolean(NEW_CLICKED, false).apply();
-                pref_ed.putBoolean(CONTINUE, true).apply();
+                pref_ed.putBoolean(MULTI, false).apply();
+                pref_ed.putBoolean(SINGLE, true).apply();
 
-                // getActivity().getPreferences(MODE_PRIVATE).edit().putInt("win_count", 0).apply();
-                // getActivity().getPreferences(MODE_PRIVATE).edit().putInt("loss_count", 0).apply();
-
+                // TODO: put player in single player mode
                 Intent intent = new Intent(getActivity(), GameActivity.class);
                 getActivity().startActivity(intent);
             }
         });
 
-        View newButton = rootView.findViewById(R.id.new_button);
-        newButton.setOnClickListener(new View.OnClickListener() {
+        View multiButton = rootView.findViewById(R.id.multi_button);
+        multiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor pref_ed = getActivity().getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit();
-                pref_ed.putBoolean(NEW_CLICKED, true).apply();
+                pref_ed.putBoolean(MULTI, true).apply();
+                pref_ed.putBoolean(SINGLE, false).apply();
 
+                // TODO: put in multiplayer mode
                 Intent intent = new Intent(getActivity(), GameActivity.class);
                 getActivity().startActivity(intent);
             }

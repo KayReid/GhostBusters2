@@ -31,7 +31,7 @@
         android:textSize="40sp"/>
 
     <Button
-        android:id="@+id/new_button"
+        android:id="@+id/single_button"
         android:layout_width="321dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -39,12 +39,12 @@
         android:backgroundTint="@color/redThirty"
         android:fontFamily="@font/bloody"
         android:padding="15dp"
-        android:text="@string/Single_Player"
+        android:text="@string/single_Player"
         android:textSize="40sp" />
 
 
     <Button
-        android:id="@+id/continue_button"
+        android:id="@+id/multi_button"
         android:layout_width="330dp"
         android:layout_height="78dp"
         android:layout_gravity="center"
@@ -52,8 +52,7 @@
         android:backgroundTint="@color/redForty"
         android:fontFamily="@font/bloody"
         android:padding="15dp"
-        android:text="@string/Multi_player"
+        android:text="@string/multi_player"
         android:textSize="40sp" />
-
 
 </LinearLayout>
