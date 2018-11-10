@@ -117,6 +117,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ghostLocation.setLongitude(ghostLon);
             Ghost ghost = new Ghost(ghostLocation);
 
+            // TODO: keep track of these in a set?
+
             // Get coordinates
             System.out.println(ghost.getLocation());
         }
