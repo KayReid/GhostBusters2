@@ -1,5 +1,6 @@
 package edu.stlawu.ghostbusters;
 
+import android.content.Intent;
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -17,9 +18,12 @@ import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -46,6 +50,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Create a stroke pattern of a dot followed by a gap, a dash, and another gap.
     private GoogleMap SLUMap;
+
+    // Keep track of ghost locations in an array
+    private ArrayList<Ghost> ghostList = new ArrayList<>();
+    public ArrayList<Ghost> getGhostList() {
+        return ghostList;
+    }
+    // Allow Game Activity to have access to the ghost list
+    public static final MapsActivity mapsActivity = new MapsActivity();
+    public static MapsActivity getInstance() {
+        return mapsActivity;
+    }
 
     @Override
 
@@ -99,6 +114,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double minLon = -75.1741;
         double maxLon = -75.1494;
 
+        //Set<Ghost> ghostSet = new HashSet<Ghost>();
+
+
         // Generate ghosts at random locations
         for (int i = 0; i < 100; i++) {
             // Get a random coordinate (lat & lon) for the ghost
@@ -117,12 +135,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ghostLocation.setLongitude(ghostLon);
             Ghost ghost = new Ghost(ghostLocation);
 
-            // TODO: keep track of these in a set?
+            ghostList.add(ghost);
 
             // Get coordinates
-            System.out.println(ghost.getLocation());
+            //System.out.println(ghost.getLocation());
         }
+
     }
+
 
     /**
      * Styles the polygon, based on type.

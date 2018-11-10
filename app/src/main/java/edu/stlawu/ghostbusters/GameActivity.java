@@ -2,6 +2,7 @@ package edu.stlawu.ghostbusters;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Camera;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -33,6 +35,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private Location ghost;
     private Button flashlightButton;
     private Boolean flashLightStatus = false;
+    private ArrayList<Ghost> ghostList = MapsActivity.getInstance().getGhostList();
 
 
     @Override
@@ -65,14 +68,15 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             ActivityCompat.requestPermissions(GameActivity.this, new String[] {Manifest.permission.CAMERA}, PERMISSION_REQUEST_CODE);
         }
 
-        // TODO: set these
+
+        /**
         Double labGhostLat = 44.587783573;
         Double labGhostLong = -75.160687667;
 
         // set location of example ghost
         ghost = new Location("labGhost");
         ghost.setLatitude(labGhostLat);
-        ghost.setLongitude(labGhostLong);
+        ghost.setLongitude(labGhostLong);*/
 
         flashlightButton.setOnClickListener(new View.OnClickListener() {
 
@@ -143,21 +147,29 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
     @Override
     public void update(Observable observable, Object o) {
-        if (observable instanceof LocationHandler) {
-            Location l = (Location) o;
-            // don't even need these variables rn
-            final double lat = l.getLatitude();
-            final double lon = l.getLongitude();
-            // do a gradual color change using rgb values, something like (255,255,255) when outside of zero, then (255-distance*5,0,0)
-            int distance = (int) findDistance(l,ghost);
 
-            // TODO: change location of this?
-            if(distance < 45){
-                screen.setBackgroundColor(Color.rgb(255,255-distance*5,255-distance*5));
-            }else{
-                screen.setBackgroundColor(Color.WHITE);
+        for (int i = 0; i < ghostList.size(); i++){
+            Location ghostLocation = ghostList.get(i).getLocation();
+
+            if (observable instanceof LocationHandler) {
+                Location l = (Location) o;
+                // don't even need these variables rn
+                //final double lat = l.getLatitude();
+                //final double lon = l.getLongitude();
+
+                // do a gradual color change using rgb values, something like (255,255,255) when outside of zero, then (255-distance*5,0,0)
+                int distance = (int) findDistance(l,ghostLocation);
+
+                // TODO: change location of this?
+                if(distance < 45){
+                    screen.setBackgroundColor(Color.rgb(255,255-distance*5,255-distance*5));
+                }else{
+                    screen.setBackgroundColor(Color.WHITE);
+                }
             }
         }
+
+
     }
 
     // returns distance in meters
