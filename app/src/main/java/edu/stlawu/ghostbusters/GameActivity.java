@@ -17,6 +17,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.Observable;
@@ -43,6 +45,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         screen = findViewById(R.id.screen);
         flashlightButton = findViewById(R.id.flashlight);
+
         if (flashlightButton == null){
             Log.i(LOGTAG, "Flashlight is null. FUCK!");
         }
@@ -90,7 +93,10 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             }
         });
 
+
         CameraView camera = new CameraView(this);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.addView(camera);
         // TODO: working on CameraView
     }
 
