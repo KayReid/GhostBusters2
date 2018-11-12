@@ -2,21 +2,64 @@ package edu.stlawu.ghostbusters;
 
 import android.content.Intent;
 import android.location.Location;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.dynamic.IObjectWrapper;
+import com.google.android.gms.internal.maps.zzac;
+import com.google.android.gms.internal.maps.zzk;
+import com.google.android.gms.internal.maps.zzn;
+import com.google.android.gms.internal.maps.zzt;
+import com.google.android.gms.internal.maps.zzw;
+import com.google.android.gms.internal.maps.zzz;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.internal.IGoogleMapDelegate;
+import com.google.android.gms.maps.internal.ILocationSourceDelegate;
+import com.google.android.gms.maps.internal.IProjectionDelegate;
+import com.google.android.gms.maps.internal.IUiSettingsDelegate;
+import com.google.android.gms.maps.internal.zzab;
+import com.google.android.gms.maps.internal.zzad;
+import com.google.android.gms.maps.internal.zzaf;
+import com.google.android.gms.maps.internal.zzaj;
+import com.google.android.gms.maps.internal.zzal;
+import com.google.android.gms.maps.internal.zzan;
+import com.google.android.gms.maps.internal.zzap;
+import com.google.android.gms.maps.internal.zzar;
+import com.google.android.gms.maps.internal.zzat;
+import com.google.android.gms.maps.internal.zzav;
+import com.google.android.gms.maps.internal.zzax;
+import com.google.android.gms.maps.internal.zzaz;
+import com.google.android.gms.maps.internal.zzbb;
+import com.google.android.gms.maps.internal.zzbd;
+import com.google.android.gms.maps.internal.zzbf;
+import com.google.android.gms.maps.internal.zzbs;
+import com.google.android.gms.maps.internal.zzc;
+import com.google.android.gms.maps.internal.zzh;
+import com.google.android.gms.maps.internal.zzl;
+import com.google.android.gms.maps.internal.zzp;
+import com.google.android.gms.maps.internal.zzr;
+import com.google.android.gms.maps.internal.zzv;
+import com.google.android.gms.maps.internal.zzx;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.Dash;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.Gap;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +84,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final PatternItem DASH = new Dash(PATTERN_DASH_LENGTH_PX);
     private static final PatternItem GAP = new Gap(PATTERN_GAP_LENGTH_PX);
     private static final List<PatternItem> PATTERN_POLYLINE_DOTTED = Arrays.asList(GAP, DOT);
+    public Boolean init = false;
 
     // Create a stroke pattern of a gap followed by a dot.
     private static final List<PatternItem> PATTERN_POLYGON_ALPHA = Arrays.asList(GAP, DASH);
@@ -63,10 +107,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        init = true;
+
+        // GoogleMap map = new GoogleMap(mapDelegate);
+        // onMapReady(map);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -136,13 +184,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Ghost ghost = new Ghost(ghostLocation);
 
             ghostList.add(ghostLocation);
-
-            // Get coordinates
-            //System.out.println(ghost.getLocation());
         }
 
     }
 
+    public Boolean getInit() {
+        return init;
+    }
 
     /**
      * Styles the polygon, based on type.

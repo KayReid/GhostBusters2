@@ -49,10 +49,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         screen = findViewById(R.id.screen);
         flashlightButton = findViewById(R.id.flashlight);
 
-        if (flashlightButton == null){
-            Log.i(LOGTAG, "Flashlight is null. FUCK!");
-        }
-
         if (handler == null) {
             this.handler = new LocationHandler(this);
             this.handler.addObserver(this);
@@ -97,11 +93,25 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             }
         });
 
+        // camera view
+        // TODO: does doing this not help lessen the work being done on the main thread?
+        // look at example on running on a different thread in stopWatch
+        final FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        Runnable cameraThread = new Runnable() {
+            @Override
+            public void run() {
+                CameraView camera = new CameraView(GameActivity.this);
+                preview.addView(camera);
+            }
+        };
+        cameraThread.run();
 
-        CameraView camera = new CameraView(this);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(camera);
-        // TODO: working on CameraView
+        // TODO: check ghostList, but it isn't f****** working :)
+        MapsActivity map = new MapsActivity();
+        ArrayList<Location> ghosts = new ArrayList<>(map.getGhostList());
+        Log.i(LOGTAG, "Size of list: " + ghostList.size());
+        Log.i(LOGTAG, "Size of ghost list: " + ghosts.size());
+        Log.i(LOGTAG, "Init: " + MapsActivity.getInstance().getInit());
     }
 
     public boolean isPermissions_granted() {
