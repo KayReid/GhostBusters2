@@ -89,6 +89,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 }
             }
         });
+
+        CameraView camera = new CameraView(this);
+        // TODO: working on CameraView
     }
 
     public boolean isPermissions_granted() {
