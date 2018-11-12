@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#d1000000</color>
+    <color name="SolidBlack">#000000</color>
     <color name="colorAccent">#FF4081</color>
     <color name="redTen">#700404</color>
     <color name="redTwenty">#A30505</color>
     <color name="redThirty">#BA1C1C</color>
     <color name="redForty">#C93636</color>
     <color name="redFifty">#D15252</color>
+    <color name="white">#ffffff</color>
 </resources>

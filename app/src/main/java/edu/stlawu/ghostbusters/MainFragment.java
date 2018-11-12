@@ -6,15 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -24,6 +20,7 @@ public class MainFragment extends Fragment {
     public static final String SINGLE = "SINGLE";
     public static final String  MULTI = "MULTI";
     private OnFragmentInteractionListener mListener;
+
 
     // constructor
     public MainFragment() {
