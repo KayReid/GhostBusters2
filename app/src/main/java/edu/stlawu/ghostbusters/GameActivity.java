@@ -37,7 +37,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private Location ghost;
     private Button flashlightButton;
     private Boolean flashLightStatus = false;
-    private ArrayList<Ghost> ghostList = MapsActivity.getInstance().getGhostList();
+    private ArrayList<Location> ghostList = MapsActivity.getInstance().getGhostList();
 
 
     @Override
@@ -158,7 +158,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     public void update(Observable observable, Object o) {
 
         for (int i = 0; i < ghostList.size(); i++){
-            Location ghostLocation = ghostList.get(i).getLocation();
+            Location ghostLocation = ghostList.get(i);
 
             if (observable instanceof LocationHandler) {
                 Location l = (Location) o;

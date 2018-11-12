@@ -52,8 +52,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap SLUMap;
 
     // Keep track of ghost locations in an array
-    private ArrayList<Ghost> ghostList = new ArrayList<>();
-    public ArrayList<Ghost> getGhostList() {
+    private ArrayList<Location> ghostList = new ArrayList<>();
+    public ArrayList<Location> getGhostList() {
         return ghostList;
     }
     // Allow Game Activity to have access to the ghost list
@@ -135,7 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ghostLocation.setLongitude(ghostLon);
             Ghost ghost = new Ghost(ghostLocation);
 
-            ghostList.add(ghost);
+            ghostList.add(ghostLocation);
 
             // Get coordinates
             //System.out.println(ghost.getLocation());
