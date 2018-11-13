@@ -37,8 +37,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private Location ghost;
     private Button flashlightButton;
     private Boolean flashLightStatus = false;
-    private ArrayList<Location> ghostList = MapsActivity.getInstance().getGhostList();
-
+    //private ArrayList<Location> ghostList = MapsActivity.getInstance().getGhostList();
+    private GhostManager gm = new GhostManager(100);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,11 +107,13 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         cameraThread.run();
 
         // TODO: check ghostList, but it isn't f****** working :)
-        MapsActivity map = new MapsActivity();
-        ArrayList<Location> ghosts = new ArrayList<>(map.getGhostList());
-        Log.i(LOGTAG, "Size of list: " + ghostList.size());
-        Log.i(LOGTAG, "Size of ghost list: " + ghosts.size());
-        Log.i(LOGTAG, "Init: " + MapsActivity.getInstance().getInit());
+        //MapsActivity map = new MapsActivity();
+        //ArrayList<Location> ghosts = new ArrayList<>(map.getGhostList());
+
+        Log.i(LOGTAG, "Size of list: " + gm.getGhostList().size());
+        //Log.i(LOGTAG, "Size of ghost list: " + ghosts.size());
+        Log.i(LOGTAG, "List of ghost locations:" + gm.getGhostList());
+        //Log.i(LOGTAG, "Init: " + MapsActivity.getInstance().getInit());
     }
 
     public boolean isPermissions_granted() {
@@ -167,8 +169,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     @Override
     public void update(Observable observable, Object o) {
 
-        for (int i = 0; i < ghostList.size(); i++){
-            Location ghostLocation = ghostList.get(i);
+        for (int i = 0; i < gm.getGhostList().size(); i++){
+            Location ghostLocation = gm.getGhostList().get(i);
 
             if (observable instanceof LocationHandler) {
                 Location l = (Location) o;
