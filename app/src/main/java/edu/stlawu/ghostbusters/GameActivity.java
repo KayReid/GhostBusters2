@@ -30,6 +30,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.TimeUnit;
 
 public class GameActivity extends AppCompatActivity implements Observer, MainFragment.OnFragmentInteractionListener{
 
@@ -54,6 +55,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         flashlightButton = findViewById(R.id.flashlight);
 
         // TODO: Create Timer Options: 5, 10, or 20 minutes
+        CreateTimerOptions();
 
         if (handler == null) {
             this.handler = new LocationHandler(this);
@@ -106,49 +108,83 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         return permissions_granted;
     }
 
-    /**
+
     // TODO: Create Popup Window for Timer Options
-    AlertDialog alertDialog1;
+    AlertDialog chooseTimerDialog;
     CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes"};
     public void CreateTimerOptions() {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setTitle("Choose Timer");
         builder.setSingleChoiceItems(values, -1, new DialogInterface.OnClickListener() {
+
             @Override
             public void onClick(DialogInterface dialog, int item) {
+                final TextView timerView = findViewById(R.id.timerView);
 
                 switch(item) {
                     case 0:
                         // TODO: Return to Game Activity with 10 Minute Timer and Generated Ghosts
-                        TextView timerView = findViewById(R.id.timerView)
                         timer = new CountDownTimer(600000, 1000) {
+
                             @Override
                             public void onTick(long millisUntilFinished) {
-                                timerView.setText("");
+                                timerView.setText("" + String.format("%dmin,%dsec",
+                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
                             }
 
                             @Override
                             public void onFinish() {
 
                             }
-                        }
+                        }.start();
                         break;
 
                     case 1:
                         // TODO: Return to Game Activity with 15 Minute Timer and Generated Ghosts
+                        timer = new CountDownTimer(900000, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                timerView.setText("" + String.format("%d min, %d sec",
+                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                            }
+
+                            @Override
+                            public void onFinish() {
+
+                            }
+                        }.start();
                         break;
 
                     case 2:
                         // TODO: Return to Game Activity with 20 Minute Timer and Generated Ghosts
+                        timer = new CountDownTimer(1200000, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                timerView.setText("" + String.format("%d min, %d sec",
+                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                            }
+
+                            @Override
+                            public void onFinish() {
+
+                            }
+                        }.start();
                         break;
                 }
-                alertDialog1.dismiss();
+                chooseTimerDialog.dismiss();
 
             }
         });
-        alertDialog1 = builder.create();
-        alertDialog1.show();
-    }*/
+        chooseTimerDialog = builder.create();
+        chooseTimerDialog.show();
+    }
+
 
     // TODO: distinguish between camera and location permissions(use a switch)
     @Override
