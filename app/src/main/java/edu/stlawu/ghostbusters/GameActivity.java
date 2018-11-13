@@ -49,6 +49,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         screen = findViewById(R.id.screen);
         flashlightButton = findViewById(R.id.flashlight);
 
+        // TODO: Create Timer Options - 5, 10, or 20 minute
+
         if (handler == null) {
             this.handler = new LocationHandler(this);
             this.handler.addObserver(this);
@@ -66,16 +68,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(GameActivity.this, new String[] {Manifest.permission.CAMERA}, PERMISSION_REQUEST_CODE);
         }
-
-
-        /**
-        Double labGhostLat = 44.587783573;
-        Double labGhostLong = -75.160687667;
-
-        // set location of example ghost
-        ghost = new Location("labGhost");
-        ghost.setLatitude(labGhostLat);
-        ghost.setLongitude(labGhostLong);*/
 
         flashlightButton.setOnClickListener(new View.OnClickListener() {
 
@@ -97,22 +89,20 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         // TODO: does doing this not help lessen the work being done on the main thread?
         // look at example on running on a different thread in stopWatch
         final FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        GameActivity.this.runOnUiThread(new Runnable() {
+        Runnable cameraThread = new Runnable() {
             @Override
             public void run() {
                 CameraView camera = new CameraView(GameActivity.this);
                 preview.addView(camera);
             }
-        });
+        };
+        cameraThread.run();
 
-        // TODO: check ghostList, but it isn't f****** working :)
-        //MapsActivity map = new MapsActivity();
-        //ArrayList<Location> ghosts = new ArrayList<>(map.getGhostList());
+        // TODO: Update - ghostList is working :)
 
         Log.i(LOGTAG, "Size of list: " + gm.getGhostList().size());
-        //Log.i(LOGTAG, "Size of ghost list: " + ghosts.size());
         Log.i(LOGTAG, "List of ghost locations:" + gm.getGhostList());
-        //Log.i(LOGTAG, "Init: " + MapsActivity.getInstance().getInit());
+
     }
 
     public boolean isPermissions_granted() {
@@ -168,6 +158,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     @Override
     public void update(Observable observable, Object o) {
 
+        // comparing player's location with the ghost locations
         for (int i = 0; i < gm.getGhostList().size(); i++){
             Location ghostLocation = gm.getGhostList().get(i);
 
@@ -175,7 +166,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 Location l = (Location) o;
                 // don't even need these variables rn
                 //final double lat = l.getLatitude();
-                //final double lon = l.getLongitude();
+                //final double lon = l.getLongitude();  5j
 
                 // do a gradual color change using rgb values, something like (255,255,255) when outside of zero, then (255-distance*5,0,0)
                 int distance = (int) findDistance(l,ghostLocation);
@@ -183,6 +174,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 // TODO: change location of this?
                 if(distance < 45){
                     screen.setBackgroundColor(Color.rgb(255,255-distance*5,255-distance*5));
+                    // TODO: add ghost sound effects, ghost animation
                 }else{
                     screen.setBackgroundColor(Color.WHITE);
                 }
