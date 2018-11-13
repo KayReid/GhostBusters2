@@ -12,30 +12,60 @@
         android:layout_height="fill_parent"
         />
 
+    <TextView
+        android:id="@+id/ghost_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/_0"
+        android:textSize="45sp"
+
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="200dp"
+        android:layout_marginTop="18dp"
+        android:text="Ghost Count:"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/time_count"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="18dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="350dp"
+        android:text="@string/_0"
+        android:textSize="25sp" />
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+
         <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:id="@+id/screen"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/flashlight"
-        android:layout_width="83dp"
-        android:layout_height="45dp"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/flashlight"
+        android:layout_gravity="center_horizontal|center|bottom"
+        android:layout_marginBottom="20dp"
         android:adjustViewBounds="true"
+        android:background="@drawable/roundedcorner"
+        android:outlineSpotShadowColor="@color/colorPrimaryDark"
         android:scaleType="centerInside"
-        android:background="@color/redFifty"
-        android:outlineAmbientShadowColor="@color/colorPrimaryDark"
-         />
+        android:padding="12dp"
+        android:src="@drawable/flashlight" />
 
 </FrameLayout>
