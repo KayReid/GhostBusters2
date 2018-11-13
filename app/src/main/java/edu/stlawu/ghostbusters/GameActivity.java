@@ -2,6 +2,7 @@ package edu.stlawu.ghostbusters;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -11,8 +12,10 @@ import android.hardware.camera2.CameraManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -39,6 +43,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private Boolean flashLightStatus = false;
     //private ArrayList<Location> ghostList = MapsActivity.getInstance().getGhostList();
     private GhostManager gm = new GhostManager(100);
+    private CountDownTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +54,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         screen = findViewById(R.id.screen);
         flashlightButton = findViewById(R.id.flashlight);
 
-        // TODO: Create Timer Options - 5, 10, or 20 minute
+        // TODO: Create Timer Options: 5, 10, or 20 minutes
 
         if (handler == null) {
             this.handler = new LocationHandler(this);
@@ -108,6 +113,50 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     public boolean isPermissions_granted() {
         return permissions_granted;
     }
+
+    /**
+    // TODO: Create Popup Window for Timer Options
+    AlertDialog alertDialog1;
+    CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes"};
+    public void CreateTimerOptions() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setTitle("Choose Timer");
+        builder.setSingleChoiceItems(values, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                switch(item) {
+                    case 0:
+                        // TODO: Return to Game Activity with 10 Minute Timer and Generated Ghosts
+                        TextView timerView = findViewById(R.id.)
+                        timer = new CountDownTimer(600000, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+
+                            }
+
+                            @Override
+                            public void onFinish() {
+
+                            }
+                        }
+                        break;
+
+                    case 1:
+                        // TODO: Return to Game Activity with 15 Minute Timer and Generated Ghosts
+                        break;
+
+                    case 2:
+                        // TODO: Return to Game Activity with 20 Minute Timer and Generated Ghosts
+                        break;
+                }
+                alertDialog1.dismiss();
+
+            }
+        });
+        alertDialog1 = builder.create();
+        alertDialog1.show();
+    }*/
 
     // TODO: distinguish between camera and location permissions(switch?)
     @Override
