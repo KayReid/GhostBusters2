@@ -18,6 +18,11 @@
         android:layout_height="wrap_content"
         android:text="@string/_0"
         android:textSize="45sp"
+        android:textColor="@color/redTwenty"
+        android:shadowColor="@color/colorPrimaryDark"
+        android:shadowDy="10"
+        android:shadowRadius="20"
+        android:fontFamily="@font/bloody"
 
         />
 
@@ -25,18 +30,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="200dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="20dp"
         android:text="Ghost Count:"
-        android:textSize="25sp" />
+        android:fontFamily="@font/bloody"
+        android:textSize="25sp"
+        android:textColor="@color/redTwenty"
+        android:shadowColor="@color/colorPrimaryDark"
+        android:shadowDy="10"
+        android:shadowRadius="20"/>
 
     <TextView
         android:id="@+id/time_count"
         android:layout_width="wrap_content"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="20dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="350dp"
+        android:layout_marginLeft="355dp"
         android:text="@string/_0"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        android:textColor="@color/redFifty"
+        android:fontFamily="@font/bloody"
+        android:shadowColor="@color/colorPrimaryDark"
+        android:shadowDy="10"
+        android:shadowRadius="20"
+        />
 
 
     <LinearLayout
