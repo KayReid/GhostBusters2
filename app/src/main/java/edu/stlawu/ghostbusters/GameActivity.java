@@ -128,11 +128,11 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 switch(item) {
                     case 0:
                         // TODO: Return to Game Activity with 10 Minute Timer and Generated Ghosts
-                        TextView timerView = findViewById(R.id.)
+                        TextView timerView = findViewById(R.id.timerView)
                         timer = new CountDownTimer(600000, 1000) {
                             @Override
                             public void onTick(long millisUntilFinished) {
-
+                                timerView.setText("");
                             }
 
                             @Override
@@ -225,7 +225,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                     screen.setBackgroundColor(Color.rgb(255,255-distance*5,255-distance*5));
                     // TODO: add ghost sound effects, ghost animation
                 }else{
-                    screen.setBackgroundColor(Color.WHITE);
+                    // screen.setBackgroundColor(Color.WHITE);
                 }
             }
         }
