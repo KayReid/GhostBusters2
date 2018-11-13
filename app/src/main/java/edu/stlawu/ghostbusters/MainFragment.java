@@ -75,13 +75,16 @@ public class MainFragment extends Fragment {
         multiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor pref_ed = getActivity().getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit();
-                pref_ed.putBoolean(MULTI, true).apply();
-                pref_ed.putBoolean(SINGLE, false).apply();
-
-                // TODO: put in multiplayer mode
-                Intent intent = new Intent(getActivity(), GameActivity.class);
-                getActivity().startActivity(intent);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(R.string.title);
+                builder.setMessage(R.string.multiPlayer);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                });
+                builder.show();
             }
         });
 
