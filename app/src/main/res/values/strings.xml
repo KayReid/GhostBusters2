@@ -12,6 +12,12 @@
         Get on your feet and capture them using the flashlight button on your screen when they pop up on your screen!
 
     </string>
+
+    <string name="multiPlayer">
+        Coming Soon!
+
+    </string>
+
     <string name="about_title_text">Ghost Busters</string>
     <string name="ok">OK</string>
     <string name="again">play again</string>
