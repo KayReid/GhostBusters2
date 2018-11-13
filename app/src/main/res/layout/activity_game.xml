@@ -33,6 +33,7 @@
         android:layout_alignParentTop="true"
         android:src="@drawable/torch"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside"/>
+        android:scaleType="centerInside"
+        android:contentDescription="TODO" />
 
 </FrameLayout>

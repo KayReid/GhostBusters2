@@ -2,27 +2,22 @@ package edu.stlawu.ghostbusters;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -35,7 +30,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private LocationHandler handler = null;
     private boolean permissions_granted;
     private Location ghost;
-    private Button flashlightButton;
+    private ImageButton flashlightButton;
     private Boolean flashLightStatus = false;
     //private ArrayList<Location> ghostList = MapsActivity.getInstance().getGhostList();
     private GhostManager gm = new GhostManager(100);
@@ -180,8 +175,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 }
             }
         }
-
-
     }
 
     // returns distance in meters
