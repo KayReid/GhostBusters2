@@ -31,9 +31,11 @@
         android:layout_height="45dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/torch"
+        android:src="@drawable/flashlight"
         android:adjustViewBounds="true"
         android:scaleType="centerInside"
-        android:contentDescription="TODO" />
+        android:background="@color/redFifty"
+        android:outlineAmbientShadowColor="@color/colorPrimaryDark"
+         />
 
 </FrameLayout>
