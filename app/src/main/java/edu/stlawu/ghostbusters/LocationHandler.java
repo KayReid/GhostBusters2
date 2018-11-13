@@ -22,9 +22,9 @@ public class LocationHandler extends Observable implements LocationListener {
         this.act = act;
         this.lm = (LocationManager) this.act.getSystemService(Context.LOCATION_SERVICE);
         if(this.act.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, this);
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, this);
-            lm.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 5000, 0, this);
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0, this);
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3000, 0, this);
+            lm.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 3000, 0, this);
 
             ArrayList compareAccuracy = new ArrayList<Float>();
             float gps;

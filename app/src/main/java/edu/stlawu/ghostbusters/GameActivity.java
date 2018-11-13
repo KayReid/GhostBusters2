@@ -2,24 +2,35 @@ package edu.stlawu.ghostbusters;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.TimeUnit;
 
 public class GameActivity extends AppCompatActivity implements Observer, MainFragment.OnFragmentInteractionListener{
 
@@ -29,11 +40,10 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private Observable location;
     private LocationHandler handler = null;
     private boolean permissions_granted;
-    private Location ghost;
     private ImageButton flashlightButton;
     private Boolean flashLightStatus = false;
-    //private ArrayList<Location> ghostList = MapsActivity.getInstance().getGhostList();
     private GhostManager gm = new GhostManager(100);
+    private CountDownTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +54,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         screen = findViewById(R.id.screen);
         flashlightButton = findViewById(R.id.flashlight);
 
-        // TODO: Create Timer Options - 5, 10, or 20 minute
+        // TODO: Create Timer Options: 5, 10, or 20 minutes
+        CreateTimerOptions();
 
         if (handler == null) {
             this.handler = new LocationHandler(this);
@@ -55,20 +66,16 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
         }
-
-        // TODO: does your phone or tablet have a flashlight? What to do if it doesn't?
-        final boolean hasCameraFlash = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-
-        // check camera permissions
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(GameActivity.this, new String[] {Manifest.permission.CAMERA}, PERMISSION_REQUEST_CODE);
         }
+
+        final boolean hasCameraFlash = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
 
         flashlightButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                // TODO: check if camera has flashlight
                 if (hasCameraFlash) {
                     if (flashLightStatus)
                         flashLightOff();
@@ -76,6 +83,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         flashLightOn();
                 } else {
                     Toast.makeText(GameActivity.this, "No flash available on your device", Toast.LENGTH_SHORT).show();
+                    // TODO: create faux flash
+                    // In theory, we could create some kind of view that is white or yellow and only make it visible when the flashlight is pressed?
+                    // Make it visible for a few seconds, and add some kind of sound effect
                 }
             }
         });
@@ -92,19 +102,91 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             }
         };
         cameraThread.run();
-
-        // TODO: Update - ghostList is working :)
-
-        Log.i(LOGTAG, "Size of list: " + gm.getGhostList().size());
-        Log.i(LOGTAG, "List of ghost locations:" + gm.getGhostList());
-
     }
 
     public boolean isPermissions_granted() {
         return permissions_granted;
     }
 
-    // TODO: distinguish between camera and location permissions(switch?)
+
+    // TODO: Create Popup Window for Timer Options
+    AlertDialog chooseTimerDialog;
+    CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes"};
+    public void CreateTimerOptions() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setTitle("Choose Timer");
+        builder.setSingleChoiceItems(values, -1, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                final TextView timerView = findViewById(R.id.timerView);
+
+                switch(item) {
+                    case 0:
+                        // TODO: Return to Game Activity with 10 Minute Timer and Generated Ghosts
+                        timer = new CountDownTimer(600000, 1000) {
+
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                timerView.setText("" + String.format("%dmin,%dsec",
+                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                            }
+
+                            @Override
+                            public void onFinish() {
+
+                            }
+                        }.start();
+                        break;
+
+                    case 1:
+                        // TODO: Return to Game Activity with 15 Minute Timer and Generated Ghosts
+                        timer = new CountDownTimer(900000, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                timerView.setText("" + String.format("%d min, %d sec",
+                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                            }
+
+                            @Override
+                            public void onFinish() {
+
+                            }
+                        }.start();
+                        break;
+
+                    case 2:
+                        // TODO: Return to Game Activity with 20 Minute Timer and Generated Ghosts
+                        timer = new CountDownTimer(1200000, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                timerView.setText("" + String.format("%d min, %d sec",
+                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                            }
+
+                            @Override
+                            public void onFinish() {
+
+                            }
+                        }.start();
+                        break;
+                }
+                chooseTimerDialog.dismiss();
+
+            }
+        });
+        chooseTimerDialog = builder.create();
+        chooseTimerDialog.show();
+    }
+
+
+    // TODO: distinguish between camera and location permissions(use a switch)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -122,7 +204,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
     }
 
-    // TODO: make flashlight function
     // https://medium.com/@ssaurel/create-a-torch-flashlight-application-for-android-c0b6951855c
     private void flashLightOn() {
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -159,22 +240,18 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
             if (observable instanceof LocationHandler) {
                 Location l = (Location) o;
-                // don't even need these variables rn
-                //final double lat = l.getLatitude();
-                //final double lon = l.getLongitude();  5j
-
-                // do a gradual color change using rgb values, something like (255,255,255) when outside of zero, then (255-distance*5,0,0)
                 int distance = (int) findDistance(l,ghostLocation);
 
-                // TODO: change location of this?
                 if(distance < 45){
                     screen.setBackgroundColor(Color.rgb(255,255-distance*5,255-distance*5));
                     // TODO: add ghost sound effects, ghost animation
                 }else{
-                    screen.setBackgroundColor(Color.WHITE);
+                    // TODO: fix the solid color change, try to make some gradual transparent color change
                 }
             }
         }
+
+
     }
 
     // returns distance in meters
