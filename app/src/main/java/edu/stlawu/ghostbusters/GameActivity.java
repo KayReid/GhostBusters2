@@ -97,14 +97,13 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         // TODO: does doing this not help lessen the work being done on the main thread?
         // look at example on running on a different thread in stopWatch
         final FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        Runnable cameraThread = new Runnable() {
+        GameActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 CameraView camera = new CameraView(GameActivity.this);
                 preview.addView(camera);
             }
-        };
-        cameraThread.run();
+        });
 
         // TODO: check ghostList, but it isn't f****** working :)
         //MapsActivity map = new MapsActivity();
