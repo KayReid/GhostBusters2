@@ -7,6 +7,19 @@
     tools:context=".GameActivity">
 
     <FrameLayout
+        android:id="@+id/faux_light"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:color="@color/white"
+        />
+
+    <FrameLayout
+        android:id="@+id/screen_tint"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        />
+
+    <FrameLayout
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

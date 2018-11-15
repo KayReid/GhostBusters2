@@ -3,14 +3,11 @@ package edu.stlawu.ghostbusters;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -20,23 +17,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.TimeUnit;
 
 public class GameActivity extends AppCompatActivity implements Observer, MainFragment.OnFragmentInteractionListener{
 
     private final static int PERMISSION_REQUEST_CODE = 999;
     private final static String LOGTAG = MainActivity.class.getSimpleName();
     private View screen;
+    private View fauxLight;
     private Observable location;
     private LocationHandler handler = null;
     private boolean permissions_granted;
@@ -52,8 +46,13 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        // screen tint
         screen = findViewById(R.id.screen);
+        screen.setBackgroundColor(Color.RED);
+        screen.getBackground().setAlpha(0);
+
         flashlightButton = findViewById(R.id.flashlight);
+        fauxLight = findViewById(R.id.faux_light);
         timer = findViewById(R.id.time_count);
 
 
@@ -80,15 +79,22 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             @Override
             public void onClick(View view) {
                 if (hasCameraFlash) {
-                    if (flashLightStatus)
+                    if (flashLightStatus) {
                         flashLightOff();
-                    else
+                    } else {
                         flashLightOn();
+                    }
                 } else {
                     Toast.makeText(GameActivity.this, "No flash available on your device", Toast.LENGTH_SHORT).show();
                     // TODO: create faux flash
                     // In theory, we could create some kind of view that is white or yellow and only make it visible when the flashlight is pressed?
                     // Make it visible for a few seconds, and add some kind of sound effect
+                    if (flashLightStatus) {
+                        fauxLight.setAlpha(0 / 10);
+                    } else {
+                        fauxLight.setAlpha(1);
+                        flashLightStatus = true;
+                    }
                 }
             }
         });
@@ -110,7 +116,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     public boolean isPermissions_granted() {
         return permissions_granted;
     }
-
 
     // TODO: Create Popup Window for Timer Options
     AlertDialog chooseTimerDialog;
@@ -140,8 +145,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                             @Override
                             public void onFinish() {
                                 timer.setText("GAME OVER");
-                            }
-                        }.start();
+                            }}.start();
                         break;
 
                     case 1:
@@ -149,10 +153,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         countdown = new CountDownTimer(900000, 1000) {
                             @Override
                             public void onTick(long millisUntilFinished) {
-//                                timer.setText("" + String.format("%d:%d",
-//                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
-//                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
-//                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+//                              timer.setText("" + String.format("%d:%d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished), TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished), TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
                                 int seconds = (int) (millisUntilFinished/1000);
                                 int minutes = seconds / 60;
                                 seconds = seconds % 60;
@@ -185,13 +186,11 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         break;
                 }
                 chooseTimerDialog.dismiss();
-
             }
         });
         chooseTimerDialog = builder.create();
         chooseTimerDialog.show();
     }
-
 
     // TODO: distinguish between camera and location permissions(use a switch)
     @Override
@@ -250,15 +249,13 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 int distance = (int) findDistance(l,ghostLocation);
 
                 if(distance < 45){
-                    screen.setBackgroundColor(Color.rgb(255,255-distance*5,255-distance*5));
+                    screen.getBackground().setAlpha(120 - distance);
                     // TODO: add ghost sound effects, ghost animation
                 }else{
-                    // TODO: fix the solid color change, try to make some gradual transparent color change
+                    screen.getBackground().setAlpha(0);
                 }
             }
         }
-
-
     }
 
     // returns distance in meters
