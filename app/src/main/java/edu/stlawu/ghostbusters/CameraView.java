@@ -10,6 +10,7 @@ import android.view.SurfaceView;
 
 import java.io.IOException;
 
+// https://developer.android.com/training/camera/cameradirect#java
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     private SurfaceHolder mHolder;

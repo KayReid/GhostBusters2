@@ -92,6 +92,6 @@ public class LocationHandler extends Observable implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
-
+        // TODO: add error message to fail gracefully
     }
 }
