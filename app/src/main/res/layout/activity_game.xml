@@ -45,7 +45,7 @@
         android:layout_marginTop="20dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="355dp"
-        android:text="@string/_0"
+        android:text="@string/timer"
         android:textSize="25sp"
         android:textColor="@color/redFifty"
         android:fontFamily="@font/bloody"

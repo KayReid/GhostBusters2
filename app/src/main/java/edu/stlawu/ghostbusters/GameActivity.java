@@ -43,7 +43,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private ImageButton flashlightButton;
     private Boolean flashLightStatus = false;
     private GhostManager gm = new GhostManager(100);
-    private CountDownTimer timer;
+    private CountDownTimer countdown;
+    private TextView timer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         screen = findViewById(R.id.screen);
         flashlightButton = findViewById(R.id.flashlight);
+        timer = findViewById(R.id.time_count);
+
 
         // TODO: Create Timer Options: 5, 10, or 20 minutes
         CreateTimerOptions();
@@ -119,60 +122,64 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                final TextView timerView = findViewById(R.id.timerView);
+                //final TextView timerView = findViewById(R.id.timerView);
 
                 switch(item) {
                     case 0:
                         // TODO: Return to Game Activity with 10 Minute Timer and Generated Ghosts
-                        timer = new CountDownTimer(600000, 1000) {
+                        countdown = new CountDownTimer(600000, 1000) {
 
                             @Override
                             public void onTick(long millisUntilFinished) {
-                                timerView.setText("" + String.format("%dmin,%dsec",
-                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
-                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
-                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                                int seconds = (int) (millisUntilFinished/1000);
+                                int minutes = seconds / 60;
+                                seconds = seconds % 60;
+                                timer.setText("" + String.format("%02d:%02d", minutes, seconds));
                             }
 
                             @Override
                             public void onFinish() {
-
+                                timer.setText("GAME OVER");
                             }
                         }.start();
                         break;
 
                     case 1:
                         // TODO: Return to Game Activity with 15 Minute Timer and Generated Ghosts
-                        timer = new CountDownTimer(900000, 1000) {
+                        countdown = new CountDownTimer(900000, 1000) {
                             @Override
                             public void onTick(long millisUntilFinished) {
-                                timerView.setText("" + String.format("%d min, %d sec",
-                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
-                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
-                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+//                                timer.setText("" + String.format("%d:%d",
+//                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+//                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
+//                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                                int seconds = (int) (millisUntilFinished/1000);
+                                int minutes = seconds / 60;
+                                seconds = seconds % 60;
+                                timer.setText("" + String.format("%02d:%02d", minutes, seconds));
                             }
 
                             @Override
                             public void onFinish() {
-
+                                timer.setText("GAME OVER");
                             }
                         }.start();
                         break;
 
                     case 2:
                         // TODO: Return to Game Activity with 20 Minute Timer and Generated Ghosts
-                        timer = new CountDownTimer(1200000, 1000) {
+                        countdown = new CountDownTimer(1200000, 1000) {
                             @Override
                             public void onTick(long millisUntilFinished) {
-                                timerView.setText("" + String.format("%d min, %d sec",
-                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
-                                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
-                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                                int seconds = (int) (millisUntilFinished/1000);
+                                int minutes = seconds / 60;
+                                seconds = seconds % 60;
+                                timer.setText("" + String.format("%02d:%02d", minutes, seconds));
                             }
 
                             @Override
                             public void onFinish() {
-
+                                timer.setText("GAME OVER");
                             }
                         }.start();
                         break;
