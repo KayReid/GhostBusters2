@@ -30,7 +30,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private final static int PERMISSION_REQUEST_CODE = 999;
     private final static String LOGTAG = MainActivity.class.getSimpleName();
     private View screen;
-    private View fauxLight;
     private Observable location;
     private LocationHandler handler = null;
     private boolean permissions_granted;
@@ -52,7 +51,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         screen.getBackground().setAlpha(0);
 
         flashlightButton = findViewById(R.id.flashlight);
-        fauxLight = findViewById(R.id.faux_light);
         timer = findViewById(R.id.time_count);
 
 
@@ -86,13 +84,16 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                     }
                 } else {
                     Toast.makeText(GameActivity.this, "No flash available on your device", Toast.LENGTH_SHORT).show();
-                    // TODO: create faux flash
+                    // TODO: create faux flash, YOU ARE CURRENTLY USING THE GHOST VIEW
                     // In theory, we could create some kind of view that is white or yellow and only make it visible when the flashlight is pressed?
                     // Make it visible for a few seconds, and add some kind of sound effect
                     if (flashLightStatus) {
-                        fauxLight.setAlpha(0 / 10);
+                        screen.setBackgroundColor(Color.RED);
+                        screen.getBackground().setAlpha(0);
+                        flashLightStatus = false;
                     } else {
-                        fauxLight.setAlpha(1);
+                        screen.setBackgroundColor(Color.WHITE);
+                        screen.getBackground().setAlpha(180);
                         flashLightStatus = true;
                     }
                 }
@@ -248,11 +249,13 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 Location l = (Location) o;
                 int distance = (int) findDistance(l,ghostLocation);
 
-                if(distance < 45){
-                    screen.getBackground().setAlpha(120 - distance);
-                    // TODO: add ghost sound effects, ghost animation
-                }else{
-                    screen.getBackground().setAlpha(0);
+                if(!flashLightStatus) {
+                    if (distance < 45) {
+                        screen.getBackground().setAlpha(120 - distance);
+                        // TODO: add ghost sound effects, ghost animation
+                    } else {
+                        screen.getBackground().setAlpha(0);
+                    }
                 }
             }
         }
