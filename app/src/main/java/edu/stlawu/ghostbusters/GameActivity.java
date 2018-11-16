@@ -30,6 +30,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private final static int PERMISSION_REQUEST_CODE = 999;
     private final static String LOGTAG = MainActivity.class.getSimpleName();
     private View screen;
+    private CameraViewDisplay camera_view;
     private Observable location;
     private LocationHandler handler = null;
     private boolean permissions_granted;
@@ -57,8 +58,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         flashlightButton = findViewById(R.id.flashlight);
         timer = findViewById(R.id.time_count);
         ghostgoal = findViewById(R.id.ghost_count);
-
-
+        
         // TODO: Create Timer Options: 5, 10, or 20 minutes
         CreateTimerOptions();
 
@@ -106,21 +106,24 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         });
 
         // camera view
-        // TODO: does doing this not help lessen the work being done on the main thread?
-        // look at example on running on a different thread in stopWatch
-        final FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        Runnable cameraThread = new Runnable() {
-            @Override
-            public void run() {
-                CameraView camera = new CameraView(GameActivity.this);
-                preview.addView(camera);
-            }
-        };
-        cameraThread.run();
+        camera_view = new CameraViewDisplay();
+        camera_view.run();
     }
 
     public boolean isPermissions_granted() {
         return permissions_granted;
+    }
+
+    // displays a cameraView on the view
+    class CameraViewDisplay implements Runnable{
+
+        final FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+
+        @Override
+        public void run() {
+            CameraView camera = new CameraView(GameActivity.this);
+            preview.addView(camera);
+        }
     }
 
     // TODO: Create Popup Window for Timer Options
@@ -264,22 +267,28 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     @Override
     public void update(Observable observable, Object o) {
 
-        // comparing player's location with the ghost locations
-        for (int i = 0; i < gm.getGhostList().size(); i++){
-            Location ghostLocation = gm.getGhostList().get(i);
+        if (observable instanceof LocationHandler) {
+            Location l = (Location) o;
 
-            if (observable instanceof LocationHandler) {
-                Location l = (Location) o;
-                int distance = (int) findDistance(l,ghostLocation);
+            // comparing player's location with the ghost locations
+            for (int i = 0; i < gm.getGhostList().size(); i++) {
+                Location ghostLocation = gm.getGhostList().get(i);
 
-                if(!flashLightStatus) {
-                    if (distance < 45) {
-                        screen.getBackground().setAlpha(120 - distance);
-                        // TODO: add ghost sound effects, ghost animation
-                    } else {
-                        screen.getBackground().setAlpha(0);
-                    }
-                }
+                int distance = (int) findDistance(l, ghostLocation);
+
+                // tint screen if necessary
+                tint(distance);
+            }
+        }
+    }
+
+    public void tint(int distance){
+        if (!flashLightStatus) {
+            if (distance < 45) {
+                screen.getBackground().setAlpha(120 - distance);
+                // TODO: add ghost sound effects, ghost animation
+            } else {
+                screen.getBackground().setAlpha(0);
             }
         }
     }
