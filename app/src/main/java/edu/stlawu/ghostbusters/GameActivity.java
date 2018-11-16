@@ -38,6 +38,10 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private GhostManager gm = new GhostManager(100);
     private CountDownTimer countdown;
     private TextView timer = null;
+    private TextView ghostgoal = null;
+    private int goalNumber_opt1;
+    private int goalNumber_opt2;
+    private int goalNumber_opt3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         flashlightButton = findViewById(R.id.flashlight);
         timer = findViewById(R.id.time_count);
+        ghostgoal = findViewById(R.id.ghost_count);
 
 
         // TODO: Create Timer Options: 5, 10, or 20 minutes
@@ -132,7 +137,13 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                 switch(item) {
                     case 0:
-                        // TODO: Return to Game Activity with 10 Minute Timer and Generated Ghosts
+                        // 10 MINUTE, GOAL GHOSTS = 5
+
+                        // Set the Goal Number
+                        goalNumber_opt1 = 5;
+                        ghostgoal.setText(String.valueOf(goalNumber_opt1));
+
+                        // Set the 5-Min Timer
                         countdown = new CountDownTimer(600000, 1000) {
 
                             @Override
@@ -150,7 +161,13 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         break;
 
                     case 1:
-                        // TODO: Return to Game Activity with 15 Minute Timer and Generated Ghosts
+                        // 15 MINUTE, GOAL GHOSTS = 10
+
+                        // Set the Goal Number
+                        goalNumber_opt2 = 10;
+                        ghostgoal.setText(String.valueOf(goalNumber_opt2));
+
+                        // Set the 15-Min Timer
                         countdown = new CountDownTimer(900000, 1000) {
                             @Override
                             public void onTick(long millisUntilFinished) {
@@ -169,7 +186,13 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         break;
 
                     case 2:
-                        // TODO: Return to Game Activity with 20 Minute Timer and Generated Ghosts
+                        // 20 MINUTE, GOAL GHOSTS = 15
+
+                        // Set the Goal Number
+                        goalNumber_opt3 = 15;
+                        ghostgoal.setText(String.valueOf(goalNumber_opt3));
+
+                        // Set the 20-Min Timer
                         countdown = new CountDownTimer(1200000, 1000) {
                             @Override
                             public void onTick(long millisUntilFinished) {

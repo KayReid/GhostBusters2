@@ -26,5 +26,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps2">Map</string>
     <string name="timer">00:00</string>
-    <string name ="_0">0</string>
+    <string name ="ghostgoal">0</string>
 </resources>
