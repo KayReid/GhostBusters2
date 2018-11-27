@@ -285,24 +285,24 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             int distance = (int) userLocation.distanceTo(ghostLocation);
 
             // TODO: test if this works for tinting the screen?
+            // TODO: come back to this. It will keep the screen red because it won't go through if greater than 45 meters...
             // if the ghost is within 45 meters, the screen tints and the method returns
             if (distance < 45){
                 tint(distance);
                 return;
             }
         }
+        // TODO: will this fix the red problem?
+        // It should be unreachable in range of a ghost
+        screen.getBackground().setAlpha(0);
     }
 
     // tints the screen relative to distance away from a ghost
     // darker red when it is closer
     public void tint(int distance){
         if (!flashLightStatus) {
-            if (distance < 45) {
-                screen.getBackground().setAlpha(120 - distance);
-                // TODO: add ghost sound effects, ghost animation
-            } else {
-                screen.getBackground().setAlpha(0);
-            }
+            screen.getBackground().setAlpha(120 - distance);
+            //TODO: add ghost sound effects, ghost animation
         }
     }
 
