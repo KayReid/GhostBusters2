@@ -25,6 +25,8 @@ import android.widget.Toast;
 import java.util.Observable;
 import java.util.Observer;
 
+import static edu.stlawu.ghostbusters.R.drawable.ghost;
+
 public class GameActivity extends AppCompatActivity implements Observer, MainFragment.OnFragmentInteractionListener{
 
     private final static int PERMISSION_REQUEST_CODE = 999;
@@ -38,7 +40,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private ImageButton flashlightButton;
     private Boolean flashLightStatus = false;
     private Boolean fauxFlashLightStatus = false;
-    private GhostManager gm = new GhostManager(100);
+    private GhostManager gm = new GhostManager(500);
     private CountDownTimer countdown;
     private TextView timer = null;
     private TextView ghostgoal = null;
@@ -299,12 +301,19 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         screen.getBackground().setAlpha(0);
     }
 
+    public void ghostanimate() {
+        screen.setBackground(getDrawable(ghost));
+    }
+
     // tints the screen relative to distance away from a ghost
     // darker red when it is closer
     public void tint(int distance){
         if (!fauxFlashLightStatus) {
             screen.getBackground().setAlpha(120 - distance);
             //TODO: add ghost sound effects, ghost animation
+            if(distance < 30) {
+                ghostanimate();
+            }
         }
     }
 
