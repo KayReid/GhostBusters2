@@ -37,6 +37,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private boolean withinRange = false;
     private ImageButton flashlightButton;
     private Boolean flashLightStatus = false;
+    private Boolean fauxFlashLightStatus = false;
     private GhostManager gm = new GhostManager(100);
     private CountDownTimer countdown;
     private TextView timer = null;
@@ -51,7 +52,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        // screen tint
+        // set screen tint
         screen = findViewById(R.id.screen);
         screen.setBackgroundColor(Color.RED);
         screen.getBackground().setAlpha(0);
@@ -78,6 +79,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         final boolean hasCameraFlash = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
 
+        // click the flashlight button and get either the flash or a faux flash to work
         flashlightButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -91,14 +93,14 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 } else {
                     Toast.makeText(GameActivity.this, "No flashlight available on your device", Toast.LENGTH_SHORT).show();
                     // TODO: create faux flash, YOU ARE CURRENTLY USING THE GHOST VIEW
-                    if (flashLightStatus) {
+                    if (fauxFlashLightStatus) {
                         screen.setBackgroundColor(Color.RED);
                         screen.getBackground().setAlpha(0);
-                        flashLightStatus = false;
+                        fauxFlashLightStatus = false;
                     } else {
                         screen.setBackgroundColor(Color.WHITE);
                         screen.getBackground().setAlpha(180);
-                        flashLightStatus = true;
+                        fauxFlashLightStatus = true;
                     }
                 }
             }
@@ -120,6 +122,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         final FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
 
+        // TODO: put this on a new thread
         @Override
         public void run() {
             CameraView camera = new CameraView(GameActivity.this);
@@ -127,7 +130,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
     }
 
-    // TODO: Create Popup Window for Timer Options
+    // timer
     AlertDialog chooseTimerDialog;
     CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes"};
     public void CreateTimerOptions() {
@@ -137,7 +140,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                //final TextView timerView = findViewById(R.id.timerView);
 
                 switch(item) {
                     case 0:
@@ -175,7 +177,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         countdown = new CountDownTimer(900000, 1000) {
                             @Override
                             public void onTick(long millisUntilFinished) {
-//                              timer.setText("" + String.format("%d:%d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished), TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished), TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
                                 int seconds = (int) (millisUntilFinished/1000);
                                 int minutes = seconds / 60;
                                 seconds = seconds % 60;
@@ -220,7 +221,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         chooseTimerDialog.show();
     }
 
-    // TODO: distinguish between camera and location permissions(use a switch)
+    // TODO: distinguish between camera and location permissions (use a switch)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -289,6 +290,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             // if the ghost is within 45 meters, the screen tints and the method returns
             if (distance < 45){
                 tint(distance);
+                Log.i(LOGTAG, "WHERE IS THE MF GHOST!");
                 return;
             }
         }
@@ -300,7 +302,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     // tints the screen relative to distance away from a ghost
     // darker red when it is closer
     public void tint(int distance){
-        if (!flashLightStatus) {
+        if (!fauxFlashLightStatus) {
             screen.getBackground().setAlpha(120 - distance);
             //TODO: add ghost sound effects, ghost animation
         }
