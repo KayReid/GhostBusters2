@@ -34,6 +34,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private Observable location;
     private LocationHandler handler = null;
     private boolean permissions_granted;
+    private boolean withinRange = false;
     private ImageButton flashlightButton;
     private Boolean flashLightStatus = false;
     private GhostManager gm = new GhostManager(100);
@@ -58,7 +59,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         flashlightButton = findViewById(R.id.flashlight);
         timer = findViewById(R.id.time_count);
         ghostgoal = findViewById(R.id.ghost_count);
-        
+
         // TODO: Create Timer Options: 5, 10, or 20 minutes
         CreateTimerOptions();
 
@@ -88,10 +89,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         flashLightOn();
                     }
                 } else {
-                    Toast.makeText(GameActivity.this, "No flash available on your device", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GameActivity.this, "No flashlight available on your device", Toast.LENGTH_SHORT).show();
                     // TODO: create faux flash, YOU ARE CURRENTLY USING THE GHOST VIEW
-                    // In theory, we could create some kind of view that is white or yellow and only make it visible when the flashlight is pressed?
-                    // Make it visible for a few seconds, and add some kind of sound effect
                     if (flashLightStatus) {
                         screen.setBackgroundColor(Color.RED);
                         screen.getBackground().setAlpha(0);
@@ -104,6 +103,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 }
             }
         });
+
+        // TODO: if flashlight has been on for more than 3 seconds, turn it off
 
         // camera view
         camera_view = new CameraViewDisplay();
@@ -270,18 +271,30 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         if (observable instanceof LocationHandler) {
             Location l = (Location) o;
 
-            // comparing player's location with the ghost locations
-            for (int i = 0; i < gm.getGhostList().size(); i++) {
-                Location ghostLocation = gm.getGhostList().get(i);
+            compareGhostLocations(l);
+        }
+    }
 
-                int distance = (int) findDistance(l, ghostLocation);
+    // check ghost locations
+    public void compareGhostLocations(Location userLocation){
+        // comparing player's location with the ghost locations
+        for (int i = 0; i < gm.getGhostList().size(); i++) {
+            Location ghostLocation = gm.getGhostList().get(i);
 
-                // tint screen if necessary
+            // gets distance away from a ghost
+            int distance = (int) userLocation.distanceTo(ghostLocation);
+
+            // TODO: test if this works for tinting the screen?
+            // if the ghost is within 45 meters, the screen tints and the method returns
+            if (distance < 45){
                 tint(distance);
+                return;
             }
         }
     }
 
+    // tints the screen relative to distance away from a ghost
+    // darker red when it is closer
     public void tint(int distance){
         if (!flashLightStatus) {
             if (distance < 45) {
@@ -291,11 +304,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 screen.getBackground().setAlpha(0);
             }
         }
-    }
-
-    // returns distance in meters
-    public double findDistance(Location location1, Location location2){
-        return location1.distanceTo(location2);
     }
 
     @Override
