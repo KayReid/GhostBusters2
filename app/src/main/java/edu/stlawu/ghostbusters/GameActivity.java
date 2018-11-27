@@ -47,6 +47,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private int goalNumber_opt3;
     private int goalNumber_test;
     private int ghostsCaptured;
+    private int ghostWithinRange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         flashLightOff();
                     } else {
                         flashLightOn();
+                        if (withinRange) {
+                            capture(ghostWithinRange);
+                        }
                     }
                 } else {
                     Toast.makeText(GameActivity.this, "No flashlight available on your device", Toast.LENGTH_SHORT).show();
@@ -103,6 +107,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         screen.setBackgroundColor(Color.WHITE);
                         screen.getBackground().setAlpha(180);
                         fauxFlashLightStatus = true;
+                        if (withinRange) {
+                            capture(ghostWithinRange);
+                        }
                     }
                 }
             }
@@ -371,6 +378,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             // if the ghost is within 45 meters, the screen tints and the method returns
             if (distance < 45){
                 tint(distance);
+                withinRange = true;
+                ghostWithinRange = i;
                 Log.i(LOGTAG, "WHERE IS THE MF GHOST!");
                 return;
             }
@@ -378,6 +387,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         // TODO: will this fix the red problem?
         // It should be unreachable in range of a ghost
         screen.getBackground().setAlpha(0);
+        withinRange = false;
     }
 
     // tints the screen relative to distance away from a ghost
@@ -387,6 +397,21 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             screen.getBackground().setAlpha(120 - distance);
             //TODO: add ghost sound effects, ghost animation
         }
+    }
+
+    // ghost interaction
+    // takes index of ghost, removes it, and adds a new one
+    public void capture(int capturedGhost){
+        gm.getGhostList().remove(capturedGhost);
+        gm.addGhost();
+        //TODO: add capture sound effects and animation
+
+        // then update the screen
+        update(handler, this);
+    }
+
+    public void checkGhostCapture(){
+
     }
 
     @Override
