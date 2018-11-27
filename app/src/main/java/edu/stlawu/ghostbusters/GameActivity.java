@@ -47,6 +47,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private int goalNumber_opt1;
     private int goalNumber_opt2;
     private int goalNumber_opt3;
+    private int goalNumber_test;
+    private int ghostsCaptured;
+    private int ghostWithinRange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +94,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         flashLightOff();
                     } else {
                         flashLightOn();
+                        if (withinRange) {
+                            capture(ghostWithinRange);
+                        }
                     }
                 } else {
                     Toast.makeText(GameActivity.this, "No flashlight available on your device", Toast.LENGTH_SHORT).show();
@@ -103,6 +109,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         screen.setBackgroundColor(Color.WHITE);
                         screen.getBackground().setAlpha(180);
                         fauxFlashLightStatus = true;
+                        if (withinRange) {
+                            capture(ghostWithinRange);
+                        }
                     }
                 }
             }
@@ -132,9 +141,10 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
     }
 
-    // timer
+    // TODO: Create Popup Window for Timer Options
     AlertDialog chooseTimerDialog;
-    CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes"};
+    //CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes"};
+    CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes", " Test: 1 Minute"};
     public void CreateTimerOptions() {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setTitle("Choose Timer");
@@ -142,6 +152,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
             @Override
             public void onClick(DialogInterface dialog, int item) {
+                //final TextView timerView = findViewById(R.id.timerView);
 
                 switch(item) {
                     case 0:
@@ -150,6 +161,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         // Set the Goal Number
                         goalNumber_opt1 = 5;
                         ghostgoal.setText(String.valueOf(goalNumber_opt1));
+                        ghostsCaptured = 0;
 
                         // Set the 5-Min Timer
                         countdown = new CountDownTimer(600000, 1000) {
@@ -164,7 +176,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                             @Override
                             public void onFinish() {
-                                timer.setText("GAME OVER");
+                                //timer.setText("GAME OVER");
+                                GameOver(ghostsCaptured, goalNumber_opt1);
+
                             }}.start();
                         break;
 
@@ -174,11 +188,13 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         // Set the Goal Number
                         goalNumber_opt2 = 10;
                         ghostgoal.setText(String.valueOf(goalNumber_opt2));
+                        ghostsCaptured = 0;
 
                         // Set the 15-Min Timer
                         countdown = new CountDownTimer(900000, 1000) {
                             @Override
                             public void onTick(long millisUntilFinished) {
+//                              timer.setText("" + String.format("%d:%d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished), TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished), TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
                                 int seconds = (int) (millisUntilFinished/1000);
                                 int minutes = seconds / 60;
                                 seconds = seconds % 60;
@@ -187,7 +203,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                             @Override
                             public void onFinish() {
-                                timer.setText("GAME OVER");
+                                //timer.setText("GAME OVER");
+                                GameOver(ghostsCaptured, goalNumber_opt2);
                             }
                         }.start();
                         break;
@@ -198,6 +215,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         // Set the Goal Number
                         goalNumber_opt3 = 15;
                         ghostgoal.setText(String.valueOf(goalNumber_opt3));
+                        ghostsCaptured = 0;
 
                         // Set the 20-Min Timer
                         countdown = new CountDownTimer(1200000, 1000) {
@@ -211,16 +229,86 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                             @Override
                             public void onFinish() {
-                                timer.setText("GAME OVER");
+                                //timer.setText("GAME OVER");
+                                GameOver(ghostsCaptured, goalNumber_opt3);
                             }
                         }.start();
                         break;
+
+                    case 3:
+                        // TEST: 1 MINUTE, GOAL GHOSTS = 1
+
+                        // Set the Goal Number
+                        goalNumber_test = 1;
+                        ghostgoal.setText(String.valueOf(goalNumber_test));
+                        ghostsCaptured = 0;
+
+                        // Set the 20-Min Timer
+                        countdown = new CountDownTimer(60000, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                int seconds = (int) (millisUntilFinished/1000);
+                                int minutes = seconds / 60;
+                                seconds = seconds % 60;
+                                timer.setText("" + String.format("%02d:%02d", minutes, seconds));
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                //timer.setText("GAME OVER");
+                                GameOver(ghostsCaptured, goalNumber_test);
+                            }
+                        }.start();
+                        break;
+
                 }
                 chooseTimerDialog.dismiss();
             }
         });
         chooseTimerDialog = builder.create();
         chooseTimerDialog.show();
+    }
+
+    // Create a Game Over alert box
+    public void GameOver(int ghostsCaptured, int ghostgoal) {
+        AlertDialog gameOverDialog;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setTitle("GAME OVER")
+                //.setMessage("Number of Ghosts You Captured: " + ghostsCaptured)
+                .setCancelable(false);
+
+
+        if(ghostsCaptured < ghostgoal) {
+            String loseMessage = "Number of Ghosts You Captured: " + ghostsCaptured +
+                    "\n\nGhost Goal: " + ghostgoal +
+                    "\n\nYOU LOSE";
+            builder.setMessage(loseMessage)
+                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+        }
+
+        if(ghostsCaptured >= ghostgoal) {
+            String winMessage = "Number of Ghosts You Captured: " + ghostsCaptured +
+                    "\n\nGhost Goal: " + ghostgoal +
+                    "\n\nYOU WIN";
+            builder.setMessage(winMessage)
+                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+        }
+
+        gameOverDialog = builder.create();
+        gameOverDialog.show();
     }
 
     // TODO: distinguish between camera and location permissions (use a switch)
@@ -292,6 +380,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             // if the ghost is within 45 meters, the screen tints and the method returns
             if (distance < 45){
                 tint(distance);
+                withinRange = true;
+                ghostWithinRange = i;
                 Log.i(LOGTAG, "WHERE IS THE MF GHOST!");
                 return;
             }
@@ -299,6 +389,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         // TODO: will this fix the red problem?
         // It should be unreachable in range of a ghost
         screen.getBackground().setAlpha(0);
+        withinRange = false;
     }
 
     public void ghostanimate() {
@@ -315,6 +406,21 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 ghostanimate();
             }
         }
+    }
+
+    // ghost interaction
+    // takes index of ghost, removes it, and adds a new one
+    public void capture(int capturedGhost){
+        gm.getGhostList().remove(capturedGhost);
+        gm.addGhost();
+        //TODO: add capture sound effects and animation
+
+        // then update the screen
+        update(handler, this);
+    }
+
+    public void checkGhostCapture(){
+
     }
 
     @Override
