@@ -9,18 +9,19 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.media.SoundPool;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -51,6 +52,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private int goalNumber_test;
     private int ghostsCaptured;
     private int ghostWithinRange;
+
+    private int black = 0;
+    private SoundPool soundPool = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -397,6 +401,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
     public void ghostAnimate() {
         screenGhost.getBackground().setAlpha(255);
+        soundPool.play(black, 1f, 1f, 1, 0, 1f);
     }
 
     // tints the screen relative to distance away from a ghost
