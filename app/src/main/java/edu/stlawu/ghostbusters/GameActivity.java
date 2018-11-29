@@ -45,13 +45,14 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private GhostManager gm = new GhostManager(500);
     private CountDownTimer countdown;
     private TextView timer = null;
-    private TextView ghostgoal = null;
+    private TextView ghostGoal = null;
     private int goalNumber_opt1;
     private int goalNumber_opt2;
     private int goalNumber_opt3;
     private int goalNumber_test;
     private int ghostsCaptured;
     private int ghostWithinRange;
+    private int distance;
 
     private int black = 0;
     private SoundPool soundPool = null;
@@ -61,6 +62,14 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        // check permissions
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+        }
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(GameActivity.this, new String[] {Manifest.permission.CAMERA}, PERMISSION_REQUEST_CODE);
+        }
         
         //ghost screen
         // TODO: fix this shit
@@ -75,7 +84,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         flashlightButton = findViewById(R.id.flashlight);
         timer = findViewById(R.id.time_count);
-        ghostgoal = findViewById(R.id.ghost_count);
+        ghostGoal = findViewById(R.id.ghost_count);
 
         // TODO: Create Timer Options: 5, 10, or 20 minutes
         CreateTimerOptions();
@@ -83,14 +92,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         if (handler == null) {
             this.handler = new LocationHandler(this);
             this.handler.addObserver(this);
-        }
-
-        // check permissions
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-        }
-        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(GameActivity.this, new String[] {Manifest.permission.CAMERA}, PERMISSION_REQUEST_CODE);
         }
 
         final boolean hasCameraFlash = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
@@ -120,7 +121,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         screen.setBackgroundColor(Color.WHITE);
                         screen.getBackground().setAlpha(180);
                         fauxFlashLightStatus = true;
-                        if (withinRange) {
+                        if (withinRange && distance < 20) {
                             capture(ghostWithinRange);
                         }
                     }
@@ -171,7 +172,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                         // Set the Goal Number
                         goalNumber_opt1 = 5;
-                        ghostgoal.setText(String.valueOf(goalNumber_opt1));
+                        ghostGoal.setText(String.valueOf(goalNumber_opt1));
                         ghostsCaptured = 0;
 
                         // Set the 5-Min Timer
@@ -187,9 +188,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                             @Override
                             public void onFinish() {
-                                //timer.setText("GAME OVER");
                                 GameOver(ghostsCaptured, goalNumber_opt1);
-
                             }}.start();
                         break;
 
@@ -198,7 +197,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                         // Set the Goal Number
                         goalNumber_opt2 = 10;
-                        ghostgoal.setText(String.valueOf(goalNumber_opt2));
+                        ghostGoal.setText(String.valueOf(goalNumber_opt2));
                         ghostsCaptured = 0;
 
                         // Set the 15-Min Timer
@@ -214,7 +213,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                             @Override
                             public void onFinish() {
-                                //timer.setText("GAME OVER");
                                 GameOver(ghostsCaptured, goalNumber_opt2);
                             }
                         }.start();
@@ -225,7 +223,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                         // Set the Goal Number
                         goalNumber_opt3 = 15;
-                        ghostgoal.setText(String.valueOf(goalNumber_opt3));
+                        ghostGoal.setText(String.valueOf(goalNumber_opt3));
                         ghostsCaptured = 0;
 
                         // Set the 20-Min Timer
@@ -240,7 +238,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                             @Override
                             public void onFinish() {
-                                //timer.setText("GAME OVER");
                                 GameOver(ghostsCaptured, goalNumber_opt3);
                             }
                         }.start();
@@ -251,7 +248,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                         // Set the Goal Number
                         goalNumber_test = 1;
-                        ghostgoal.setText(String.valueOf(goalNumber_test));
+                        ghostGoal.setText(String.valueOf(goalNumber_test));
                         ghostsCaptured = 0;
 
                         // Set the 20-Min Timer
@@ -266,12 +263,10 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                             @Override
                             public void onFinish() {
-                                //timer.setText("GAME OVER");
                                 GameOver(ghostsCaptured, goalNumber_test);
                             }
                         }.start();
                         break;
-
                 }
                 chooseTimerDialog.dismiss();
             }
@@ -294,28 +289,24 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             String loseMessage = "Number of Ghosts You Captured: " + ghostsCaptured +
                     "\n\nGhost Goal: " + ghostgoal +
                     "\n\nYOU LOSE";
-            builder.setMessage(loseMessage)
-                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            builder.setMessage(loseMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
                         }
                     });
-
         }
 
         if(ghostsCaptured >= ghostgoal) {
             String winMessage = "Number of Ghosts You Captured: " + ghostsCaptured +
                     "\n\nGhost Goal: " + ghostgoal +
                     "\n\nYOU WIN";
-            builder.setMessage(winMessage)
-                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            builder.setMessage(winMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
                         }
                     });
-
         }
 
         gameOverDialog = builder.create();
@@ -332,10 +323,10 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             // we have only asked for FINE LOCATION
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 this.permissions_granted = true;
-                Log.i(LOGTAG, "Fine location permisssion granted.");
+                Log.i(LOGTAG, "Fine location and camera permission granted.");
             } else {
                 this.permissions_granted = false;
-                Log.i(LOGTAG, "Fine location permisssion not granted.");
+                Log.i(LOGTAG, "Fine location and camera permission not granted.");
             }
         }
     }
@@ -372,7 +363,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         if (observable instanceof LocationHandler) {
             Location l = (Location) o;
-
             compareGhostLocations(l);
         }
     }
@@ -384,7 +374,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             Location ghostLocation = gm.getGhostList().get(i);
 
             // gets distance away from a ghost
-            int distance = (int) userLocation.distanceTo(ghostLocation);
+            distance = (int) userLocation.distanceTo(ghostLocation);
 
             // if the ghost is within 45 meters, the screen tints and the method returns
             if (distance < 45){
