@@ -32,6 +32,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private final static int PERMISSION_REQUEST_CODE = 999;
     private final static String LOGTAG = MainActivity.class.getSimpleName();
     private View screen;
+    private View screenGhost;
     private CameraViewDisplay camera_view;
     private Observable location;
     private LocationHandler handler = null;
@@ -56,6 +57,11 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        
+        //ghost screen
+        screenGhost = findViewById(R.id.screenGhost);
+        screenGhost.setBackgroundColor(Color.RED);
+        screenGhost.getBackground().setAlpha(0);
 
         // set screen tint
         screen = findViewById(R.id.screen);
@@ -393,7 +399,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     }
 
     public void ghostanimate() {
-        screen.setBackground(getDrawable(ghost));
+        screenGhost.setBackground(getDrawable(ghost));
     }
 
     // tints the screen relative to distance away from a ghost
@@ -402,7 +408,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         if (!fauxFlashLightStatus) {
             screen.getBackground().setAlpha(120 - distance);
             //TODO: add ghost sound effects, ghost animation
-            if(distance < 30) {
+            if(distance < 20) {
                 ghostanimate();
             }
         }
