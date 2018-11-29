@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
+import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -55,17 +56,23 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
     private int black = 0;
     private SoundPool soundPool = null;
+    public AudioAttributes aa = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        this.aa = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).setUsage(AudioAttributes.USAGE_GAME).build();
+        this.soundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(aa).build();
+        this.black = this.soundPool.load(this, R.raw.black,1);
+
         
         //ghost screen
         // TODO: fix this shit
         screenGhost = findViewById(R.id.screenGhost);
-        screenGhost.setBackground(getDrawable(ghost));
         screenGhost.getBackground().setAlpha(0);
 
         // set screen tint
@@ -399,7 +406,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         withinRange = false;
     }
 
+
     public void ghostAnimate() {
+        screenGhost.setBackground(getDrawable(ghost));
         screenGhost.getBackground().setAlpha(255);
         soundPool.play(black, 1f, 1f, 1, 0, 1f);
     }
