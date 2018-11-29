@@ -375,18 +375,14 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             // gets distance away from a ghost
             int distance = (int) userLocation.distanceTo(ghostLocation);
 
-            // TODO: test if this works for tinting the screen?
-            // TODO: come back to this. It will keep the screen red because it won't go through if greater than 45 meters...
             // if the ghost is within 45 meters, the screen tints and the method returns
             if (distance < 45){
                 tint(distance);
                 withinRange = true;
                 ghostWithinRange = i;
-                Log.i(LOGTAG, "WHERE IS THE MF GHOST!");
                 return;
             }
         }
-        // TODO: will this fix the red problem?
         // It should be unreachable in range of a ghost
         screen.getBackground().setAlpha(0);
         withinRange = false;
@@ -416,11 +412,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         //TODO: add capture sound effects and animation
 
         // then update the screen
-        update(handler, this);
-    }
-
-    public void checkGhostCapture(){
-
+        // TODO: call update here?
     }
 
     @Override
