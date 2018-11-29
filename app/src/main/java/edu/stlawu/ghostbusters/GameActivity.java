@@ -59,8 +59,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         setContentView(R.layout.activity_game);
         
         //ghost screen
+        // TODO: fix this shit
         screenGhost = findViewById(R.id.screenGhost);
-        screenGhost.setBackgroundColor(Color.RED);
+        screenGhost.setBackground(getDrawable(ghost));
         screenGhost.getBackground().setAlpha(0);
 
         // set screen tint
@@ -394,8 +395,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         withinRange = false;
     }
 
-    public void ghostanimate() {
-        screenGhost.setBackground(getDrawable(ghost));
+    public void ghostAnimate() {
+        screenGhost.getBackground().setAlpha(255);
     }
 
     // tints the screen relative to distance away from a ghost
@@ -405,7 +406,10 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             screen.getBackground().setAlpha(120 - distance);
             //TODO: add ghost sound effects, ghost animation
             if(distance < 20) {
-                ghostanimate();
+                ghostAnimate();
+                Log.i(LOGTAG, "WHERE R U?");
+            }else{
+                screenGhost.getBackground().setAlpha(0);
             }
         }
     }
