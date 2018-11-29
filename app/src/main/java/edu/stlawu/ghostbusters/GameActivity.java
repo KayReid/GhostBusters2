@@ -67,7 +67,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         this.aa = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).setUsage(AudioAttributes.USAGE_GAME).build();
         this.soundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(aa).build();
-        this.black = this.soundPool.load(this, R.raw.black,1);
+        this.black = this.soundPool.load(this, R.raw.black,1); 
 
         
         //ghost screen
