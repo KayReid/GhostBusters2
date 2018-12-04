@@ -84,6 +84,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         //ghost screen
         // TODO: fix this shit
         screenGhost = findViewById(R.id.screenGhost);
+        screenGhost.setBackground(getDrawable(ghost));
         screenGhost.getBackground().setAlpha(0);
 
         // set screen tint
@@ -327,7 +328,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
+ 
         if (requestCode == PERMISSION_REQUEST_CODE) {
             // we have only asked for FINE LOCATION
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -400,7 +401,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
 
     public void ghostAnimate() {
-        screenGhost.setBackground(getDrawable(ghost));
         screenGhost.getBackground().setAlpha(255);
         soundPool.play(black, 1f, 1f, 1, 0, 1f);
     }
@@ -410,6 +410,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     public void tint(int distance){
         if (!fauxFlashLightStatus) {
             screen.getBackground().setAlpha(120 - distance);
+            Log.i(LOGTAG, "WHERE IS TINT?");
             //TODO: add ghost sound effects, ghost animation
             if(distance < 20) {
                 ghostAnimate();
