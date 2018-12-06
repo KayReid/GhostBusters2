@@ -378,7 +378,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     }
 
     // check ghost locations
-    public void compareGhostLocations(Location userLocation){
+    public boolean compareGhostLocations(Location userLocation){
         // comparing player's location with the ghost locations
         for (int i = 0; i < gm.getGhostList().size(); i++) {
             Location ghostLocation = gm.getGhostList().get(i);
@@ -391,12 +391,13 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 tint(distance);
                 withinRange = true;
                 ghostWithinRange = i;
-                return;
+                return true;
             }
         }
         // It should be unreachable in range of a ghost
         screen.getBackground().setAlpha(0);
         withinRange = false;
+        return false;
     }
 
 
