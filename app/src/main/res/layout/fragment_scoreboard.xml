@@ -36,7 +36,6 @@
                 android:textColor="@color/colorPrimary"/>
 
             <TextView
-                android:id="@+id/highscore_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/highscore_1"
@@ -60,7 +59,6 @@
                 android:textColor="@color/colorPrimary"/>
 
             <TextView
-                android:id="@+id/highscore_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/highscore_2"
@@ -84,7 +82,6 @@
                 android:textColor="@color/colorPrimary"/>
 
             <TextView
-                android:id="@+id/highscore_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/highscore_3"
