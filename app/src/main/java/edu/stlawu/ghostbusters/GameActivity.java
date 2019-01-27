@@ -36,25 +36,22 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private View screen;
     private View screenGhost;
     private CameraViewDisplay camera_view;
-    private Observable location;
     private LocationHandler handler = null;
     private boolean permissions_granted;
     private boolean withinRange = false;
     private ImageButton flashlightButton;
     private Boolean flashLightStatus = false;
-    private Boolean fauxFlashLightStatus = false;
     private GhostManager gm = new GhostManager(500);
     private CountDownTimer countdown;
     private TextView timer = null;
     private TextView ghostGoal = null;
-    private int goalNumber_opt1;
-    private int goalNumber_opt2;
-    private int goalNumber_opt3;
-    private int goalNumber_test;
+    private int goalNumber;
+    private int chosenTime;
     private int ghostsCaptured;
     private int ghostWithinRange;
     private int distance;
 
+    // ghost sound
     private int black = 0;
     private SoundPool soundPool = null;
     public AudioAttributes aa = null;
@@ -66,31 +63,33 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-
+        // sound
         this.aa = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).setUsage(AudioAttributes.USAGE_GAME).build();
         this.soundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(aa).build();
         this.black = this.soundPool.load(this, R.raw.black,1); 
 
 
         // check permissions
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-        }
-        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(GameActivity.this, new String[] {Manifest.permission.CAMERA}, PERMISSION_REQUEST_CODE);
-        }
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CAMERA,
+        };
 
+        if(!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
         
         //ghost screen
-        // TODO: fix this shit
+        // TODO: if we cannot get both screen to work, we will simplify it to just have a ghost pop up
         screenGhost = findViewById(R.id.screenGhost);
         screenGhost.setBackground(getDrawable(ghost));
-        screenGhost.getBackground().setAlpha(0);
+        screenGhost.setAlpha(0);
 
         // set screen tint
         screen = findViewById(R.id.screen);
         screen.setBackgroundColor(Color.RED);
-        screen.getBackground().setAlpha(0);
+        screen.setAlpha(0);
 
         flashlightButton = findViewById(R.id.flashlight);
         timer = findViewById(R.id.time_count);
@@ -99,47 +98,34 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         // TODO: Create Timer Options: 5, 10, or 20 minutes
         CreateTimerOptions();
 
+        // initialize the location feature
         if (handler == null) {
             this.handler = new LocationHandler(this);
             this.handler.addObserver(this);
         }
 
-        final boolean hasCameraFlash = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-
-        // click the flashlight button and get either the flash or a faux flash to work
+        // click the flashlight button and get flash to work
         flashlightButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                if (hasCameraFlash) {
-                    if (flashLightStatus) {
-                        flashLightOff();
-                    } else {
-                        flashLightOn();
-                        if (withinRange) {
-                            capture(ghostWithinRange);
-                        }
-                    }
+                // TODO: in faux flash, YOU ARE CURRENTLY USING THE GHOST VIEW
+                // TODO: if flashlight has been on for more than 3 seconds, turn it off
+                if (flashLightStatus) {
+                    screen.setBackgroundColor(Color.RED);
+                    screen.setAlpha(0);
+                    flashLightStatus = false;
                 } else {
-                    Toast.makeText(GameActivity.this, "No flashlight available on your device", Toast.LENGTH_SHORT).show();
-                    // TODO: create faux flash, YOU ARE CURRENTLY USING THE GHOST VIEW
-                    if (fauxFlashLightStatus) {
-                        screen.setBackgroundColor(Color.RED);
-                        screen.getBackground().setAlpha(0);
-                        fauxFlashLightStatus = false;
-                    } else {
-                        screen.setBackgroundColor(Color.WHITE);
-                        screen.getBackground().setAlpha(180);
-                        fauxFlashLightStatus = true;
-                        if (withinRange && distance < 20) {
-                            capture(ghostWithinRange);
-                        }
+                    screen.setBackgroundColor(Color.WHITE);
+                    screen.setAlpha(0.5f);
+                    flashLightStatus = true;
+                    if (withinRange && distance < 20) {
+                        capture(ghostWithinRange);
                     }
                 }
+
             }
         });
-
-        // TODO: if flashlight has been on for more than 3 seconds, turn it off
 
         // camera view
         camera_view = new CameraViewDisplay();
@@ -155,7 +141,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         final FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
 
-        // TODO: put this on a new thread
+        // TODO: put this on a new thread?
         @Override
         public void run() {
             CameraView camera = new CameraView(GameActivity.this);
@@ -163,126 +149,62 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
     }
 
-    // TODO: Create Popup Window for Timer Options
     AlertDialog chooseTimerDialog;
-    //CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes"};
-    CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes", " Test: 1 Minute"};
+
+    CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes"};
     public void CreateTimerOptions() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setTitle("Choose Timer");
         builder.setSingleChoiceItems(values, -1, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                //final TextView timerView = findViewById(R.id.timerView);
 
                 switch(item) {
                     case 0:
-                        // 10 MINUTE, GOAL GHOSTS = 5
-
-                        // Set the Goal Number
-                        goalNumber_opt1 = 5;
-                        ghostGoal.setText(String.valueOf(goalNumber_opt1));
-                        ghostsCaptured = 0;
-
-                        // Set the 5-Min Timer
-                        countdown = new CountDownTimer(600000, 1000) {
-
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-                                int seconds = (int) (millisUntilFinished/1000);
-                                int minutes = seconds / 60;
-                                seconds = seconds % 60;
-                                timer.setText("" + String.format("%02d:%02d", minutes, seconds));
-                            }
-
-                            @Override
-                            public void onFinish() {
-                                GameOver(ghostsCaptured, goalNumber_opt1);
-                            }}.start();
+                        // set the ghost goal and timer (10 mins)
+                        goalNumber = 5;
+                        chosenTime = 600000;
                         break;
 
                     case 1:
-                        // 15 MINUTE, GOAL GHOSTS = 10
-
-                        // Set the Goal Number
-                        goalNumber_opt2 = 10;
-                        ghostGoal.setText(String.valueOf(goalNumber_opt2));
-                        ghostsCaptured = 0;
-
-                        // Set the 15-Min Timer
-                        countdown = new CountDownTimer(900000, 1000) {
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-//                              timer.setText("" + String.format("%d:%d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished), TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished), TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
-                                int seconds = (int) (millisUntilFinished/1000);
-                                int minutes = seconds / 60;
-                                seconds = seconds % 60;
-                                timer.setText("" + String.format("%02d:%02d", minutes, seconds));
-                            }
-
-                            @Override
-                            public void onFinish() {
-                                GameOver(ghostsCaptured, goalNumber_opt2);
-                            }
-                        }.start();
+                        // 15 mins, goal ghosts = 10
+                        goalNumber = 10;
+                        chosenTime = 900000;
                         break;
 
                     case 2:
-                        // 20 MINUTE, GOAL GHOSTS = 15
-
-                        // Set the Goal Number
-                        goalNumber_opt3 = 15;
-                        ghostGoal.setText(String.valueOf(goalNumber_opt3));
-                        ghostsCaptured = 0;
-
-                        // Set the 20-Min Timer
-                        countdown = new CountDownTimer(1200000, 1000) {
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-                                int seconds = (int) (millisUntilFinished/1000);
-                                int minutes = seconds / 60;
-                                seconds = seconds % 60;
-                                timer.setText("" + String.format("%02d:%02d", minutes, seconds));
-                            }
-
-                            @Override
-                            public void onFinish() {
-                                GameOver(ghostsCaptured, goalNumber_opt3);
-                            }
-                        }.start();
-                        break;
-
-                    case 3:
-                        // TEST: 1 MINUTE, GOAL GHOSTS = 1
-
-                        // Set the Goal Number
-                        goalNumber_test = 1;
-                        ghostGoal.setText(String.valueOf(goalNumber_test));
-                        ghostsCaptured = 0;
-
-                        // Set the 20-Min Timer
-                        countdown = new CountDownTimer(60000, 1000) {
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-                                int seconds = (int) (millisUntilFinished/1000);
-                                int minutes = seconds / 60;
-                                seconds = seconds % 60;
-                                timer.setText("" + String.format("%02d:%02d", minutes, seconds));
-                            }
-
-                            @Override
-                            public void onFinish() {
-                                GameOver(ghostsCaptured, goalNumber_test);
-                            }
-                        }.start();
+                        // 20 mins, goal ghosts = 15
+                        goalNumber = 15;
+                        chosenTime = 1200000;
                         break;
                 }
+
+                countdown = new CountDownTimer(chosenTime, 1000) {
+
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        int seconds = (int) (millisUntilFinished/1000);
+                        int minutes = seconds / 60;
+                        seconds = seconds % 60;
+                        timer.setText("" + String.format("%02d:%02d", minutes, seconds));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        GameOver(ghostsCaptured, goalNumber);
+                    }}.start();
+
                 chooseTimerDialog.dismiss();
             }
         });
         chooseTimerDialog = builder.create();
         chooseTimerDialog.show();
+
+        // setup timer and change the text
+        ghostGoal.setText(String.valueOf(goalNumber));
+        ghostsCaptured = 0;
     }
 
     // Create a Game Over alert box
@@ -296,9 +218,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
 
         if(ghostsCaptured < ghostgoal) {
-            String loseMessage = "Number of Ghosts You Captured: " + ghostsCaptured +
-                    "\n\nGhost Goal: " + ghostgoal +
-                    "\n\nYOU LOSE";
+            String loseMessage = "Number of Ghosts You Captured: " + ghostsCaptured + "\n\nGhost Goal: " + ghostgoal + "\n\nYOU LOSE";
             builder.setMessage(loseMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -308,9 +228,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
 
         if(ghostsCaptured >= ghostgoal) {
-            String winMessage = "Number of Ghosts You Captured: " + ghostsCaptured +
-                    "\n\nGhost Goal: " + ghostgoal +
-                    "\n\nYOU WIN";
+            String winMessage = "Number of Ghosts You Captured: " + ghostsCaptured + "\n\nGhost Goal: " + ghostgoal + "\n\nYOU WIN";
             builder.setMessage(winMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -318,54 +236,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         }
                     });
         }
-
         gameOverDialog = builder.create();
         gameOverDialog.show();
-    }
-
-    // TODO: distinguish between camera and location permissions (use a switch)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
- 
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            // we have only asked for FINE LOCATION
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                this.permissions_granted = true;
-                Log.i(LOGTAG, "Fine location and camera permission granted.");
-            } else {
-                this.permissions_granted = false;
-                Log.i(LOGTAG, "Fine location and camera permission not granted.");
-            }
-        }
-    }
-
-    // https://medium.com/@ssaurel/create-a-torch-flashlight-application-for-android-c0b6951855c
-    private void flashLightOn() {
-        CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-
-        try {
-            String cameraId = cameraManager.getCameraIdList()[0];
-            cameraManager.setTorchMode(cameraId, true);
-            flashLightStatus = true;
-            // imageFlashlight.setImageResource(R.drawable.btn_switch_on);
-        } catch (CameraAccessException e) {
-            // TODO: error message
-        }
-    }
-
-    private void flashLightOff() {
-        CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-
-        try {
-            String cameraId = cameraManager.getCameraIdList()[0];
-            cameraManager.setTorchMode(cameraId, false);
-            flashLightStatus = false;
-            // imageFlashlight.setImageResource(R.drawable.btn_switch_off);
-        } catch (CameraAccessException e) {
-            // TODO: error message
-        }
     }
 
     @Override
@@ -377,8 +249,10 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
     }
 
+    // TODO: does this work?
+    // can we replace withinrange variable with the boolean return of this?
     // check ghost locations
-    public boolean compareGhostLocations(Location userLocation){
+    public void compareGhostLocations(Location userLocation){
         // comparing player's location with the ghost locations
         for (int i = 0; i < gm.getGhostList().size(); i++) {
             Location ghostLocation = gm.getGhostList().get(i);
@@ -391,33 +265,33 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 tint(distance);
                 withinRange = true;
                 ghostWithinRange = i;
-                return true;
+                return;
             }
         }
         // It should be unreachable in range of a ghost
-        screen.getBackground().setAlpha(0);
+        screen.setAlpha(0);
         withinRange = false;
-        return false;
     }
 
-
+    // puts ghost on screen and adds sound
     public void ghostAnimate() {
-        screenGhost.getBackground().setAlpha(255);
+        screenGhost.setAlpha(1);
         soundPool.play(black, 1f, 1f, 1, 0, 1f);
     }
 
     // tints the screen relative to distance away from a ghost
     // darker red when it is closer
     public void tint(int distance){
-        if (!fauxFlashLightStatus) {
-            screen.getBackground().setAlpha(120 - distance);
+        if (!flashLightStatus) {
+            // screen.getBackground().setAlpha(120 - distance);
+            screen.setAlpha(1);
             Log.i(LOGTAG, "WHERE IS TINT?");
-            //TODO: add ghost sound effects, ghost animation
             if(distance < 20) {
                 ghostAnimate();
                 Log.i(LOGTAG, "WHERE R U?");
             }else{
-                screenGhost.getBackground().setAlpha(0);
+                screenGhost.setAlpha(0);
+                soundPool.autoPause();
             }
         }
     }
@@ -428,9 +302,17 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         gm.getGhostList().remove(capturedGhost);
         gm.addGhost();
         //TODO: add capture sound effects and animation
+    }
 
-        // then update the screen
-        // TODO: call update here?
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
