@@ -17,10 +17,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <View
+        <ImageView
             android:id="@+id/screenGhost"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:src="@drawable/ghost"/>
 
         <View
             android:id="@+id/screen"

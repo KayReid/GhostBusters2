@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.media.SoundPool;
 
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -31,13 +32,11 @@ import static edu.stlawu.ghostbusters.R.drawable.ghost;
 
 public class GameActivity extends AppCompatActivity implements Observer, MainFragment.OnFragmentInteractionListener{
 
-    private final static int PERMISSION_REQUEST_CODE = 999;
     private final static String LOGTAG = MainActivity.class.getSimpleName();
     private View screen;
     private View screenGhost;
     private CameraViewDisplay camera_view;
     private LocationHandler handler = null;
-    private boolean permissions_granted;
     private boolean withinRange = false;
     private ImageButton flashlightButton;
     private Boolean flashLightStatus = false;
@@ -51,7 +50,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private int ghostWithinRange;
     private int distance;
 
-    // ghost sound
+    // initialize ghost sound
     private int black = 0;
     private SoundPool soundPool = null;
     public AudioAttributes aa = null;
@@ -79,12 +78,16 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
-        
+
+        // TODO: Create Timer Options: 5, 10, or 20 minutes
+        CreateTimerOptions();
+
         //ghost screen
         // TODO: if we cannot get both screen to work, we will simplify it to just have a ghost pop up
+        // TODO: CANNOT DISPLAY THE IMAGE AT ALL, TRY REARRANGING THE XML, TRY REMOVING THE CAMERA
         screenGhost = findViewById(R.id.screenGhost);
-        screenGhost.setBackground(getDrawable(ghost));
-        screenGhost.setAlpha(0);
+        //screenGhost.setBackground(getDrawable(ghost));
+        // screenGhost.setAlpha(0);
 
         // set screen tint
         screen = findViewById(R.id.screen);
@@ -94,9 +97,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         flashlightButton = findViewById(R.id.flashlight);
         timer = findViewById(R.id.time_count);
         ghostGoal = findViewById(R.id.ghost_count);
-
-        // TODO: Create Timer Options: 5, 10, or 20 minutes
-        CreateTimerOptions();
 
         // initialize the location feature
         if (handler == null) {
@@ -115,6 +115,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                     screen.setBackgroundColor(Color.RED);
                     screen.setAlpha(0);
                     flashLightStatus = false;
+                    Log.i(LOGTAG, "Flash off.");
                 } else {
                     screen.setBackgroundColor(Color.WHITE);
                     screen.setAlpha(0.5f);
@@ -122,18 +123,13 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                     if (withinRange && distance < 20) {
                         capture(ghostWithinRange);
                     }
+                    Log.i(LOGTAG, "Flash on.");
                 }
-
             }
         });
-
         // camera view
-        camera_view = new CameraViewDisplay();
-        camera_view.run();
-    }
-
-    public boolean isPermissions_granted() {
-        return permissions_granted;
+        // camera_view = new CameraViewDisplay();
+        // camera_view.run();
     }
 
     // displays a cameraView on the view
@@ -141,7 +137,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         final FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
 
-        // TODO: put this on a new thread?
         @Override
         public void run() {
             CameraView camera = new CameraView(GameActivity.this);
@@ -149,10 +144,10 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
     }
 
-    AlertDialog chooseTimerDialog;
 
-    CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes"};
+    AlertDialog chooseTimerDialog;
     public void CreateTimerOptions() {
+        CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setTitle("Choose Timer");
@@ -181,6 +176,10 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         break;
                 }
 
+                // setup timer and change the text
+                ghostGoal.setText(String.valueOf(goalNumber));
+                ghostsCaptured = 0;
+
                 countdown = new CountDownTimer(chosenTime, 1000) {
 
                     @Override
@@ -201,10 +200,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         });
         chooseTimerDialog = builder.create();
         chooseTimerDialog.show();
-
-        // setup timer and change the text
-        ghostGoal.setText(String.valueOf(goalNumber));
-        ghostsCaptured = 0;
     }
 
     // Create a Game Over alert box
@@ -249,11 +244,11 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
     }
 
-    // TODO: does this work?
-    // can we replace withinrange variable with the boolean return of this?
-    // check ghost locations
+    // check ghost locations against user
     public void compareGhostLocations(Location userLocation){
         // comparing player's location with the ghost locations
+        withinRange = false;
+
         for (int i = 0; i < gm.getGhostList().size(); i++) {
             Location ghostLocation = gm.getGhostList().get(i);
 
@@ -268,9 +263,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 return;
             }
         }
-        // It should be unreachable in range of a ghost
+        // unreachable in range of a ghost
         screen.setAlpha(0);
-        withinRange = false;
     }
 
     // puts ghost on screen and adds sound
@@ -290,7 +284,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 ghostAnimate();
                 Log.i(LOGTAG, "WHERE R U?");
             }else{
-                screenGhost.setAlpha(0);
+                // screenGhost.setAlpha(0);
                 soundPool.autoPause();
             }
         }
