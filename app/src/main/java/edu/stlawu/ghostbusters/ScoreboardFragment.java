@@ -13,11 +13,6 @@ import android.view.ViewGroup;
 
 public class ScoreboardFragment extends Fragment {
 
-    public static final String PREF_NAME = "GhostBusters";
-    public static final String NEW_CLICKED = "NEWCLICKED";
-
-    //private MainFragment.OnFragmentInteractionListener mListener;
-
     public ScoreboardFragment() {
 
     }
@@ -40,10 +35,10 @@ public class ScoreboardFragment extends Fragment {
         playAgainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor pref_ed =
-                getActivity().getSharedPreferences(
-                PREF_NAME, Context.MODE_PRIVATE).edit();
-                pref_ed.putBoolean(NEW_CLICKED, true).apply();
+                //SharedPreferences.Editor pref_ed =
+                //getActivity().getSharedPreferences(
+                //PREF_NAME, Context.MODE_PRIVATE).edit();
+                //pref_ed.putBoolean(NEW_CLICKED, true).apply();
 
                 Intent intent = new Intent(getActivity(), GameActivity.class);
                 getActivity().startActivity(intent);
@@ -51,13 +46,14 @@ public class ScoreboardFragment extends Fragment {
         });
 
         View exitButton = rootView.findViewById(R.id.exit_button);
-        playAgainButton.setOnClickListener(new View.OnClickListener() {
+        exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /**
                 SharedPreferences.Editor pref_ed =
-                        getActivity().getSharedPreferences(
-                                PREF_NAME, Context.MODE_PRIVATE).edit();
-                pref_ed.putBoolean(NEW_CLICKED, true).apply();
+                getActivity().getSharedPreferences(
+                PREF_NAME, Context.MODE_PRIVATE).edit();
+                pref_ed.putBoolean(NEW_CLICKED, true).apply();*/
 
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 getActivity().startActivity(intent);

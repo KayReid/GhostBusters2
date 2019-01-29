@@ -11,36 +11,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="72dp"
+        tools:layout_editor_absoluteY="77dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Scoreboard"
             android:gravity="center|top"
-            android:textSize="50dp"
-            android:textColor="@color/redThirty"/>
+            android:text="Scoreboard"
+            android:textColor="@color/redThirty"
+            android:textSize="50dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:layout_margin="30dp">
+            android:layout_margin="30dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1. "
-                android:textSize="30dp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="30dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/highscore_1"
-                android:textSize="30dp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="30dp" />
 
         </LinearLayout>
 
@@ -48,22 +50,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:layout_margin="30dp">
+            android:layout_margin="30dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2. "
-                android:textSize="30dp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="30dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/highscore_2"
-                android:textSize="30dp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="30dp" />
 
         </LinearLayout>
 
@@ -71,22 +73,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:layout_margin="30dp">
+            android:layout_margin="30dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3. "
-                android:textSize="30dp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="30dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/highscore_3"
-                android:textSize="30dp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="30dp" />
 
         </LinearLayout>
 
@@ -99,17 +101,17 @@
                 android:id="@+id/playAgain_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/play_again"
+                android:layout_margin="100dp"
                 android:background="@android:color/holo_green_dark"
-                android:layout_margin="50dp"/>
+                android:text="@string/play_again" />
 
             <Button
                 android:id="@+id/exit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/exit"
+                android:layout_margin="100dp"
                 android:background="@android:color/holo_red_dark"
-                android:layout_margin="50dp"/>
+                android:text="@string/exit" />
 
 
         </LinearLayout>
