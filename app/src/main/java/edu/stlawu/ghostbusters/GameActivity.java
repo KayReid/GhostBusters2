@@ -87,7 +87,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         // TODO: CANNOT DISPLAY THE IMAGE AT ALL, TRY REARRANGING THE XML, TRY REMOVING THE CAMERA
         screenGhost = findViewById(R.id.screenGhost);
         //screenGhost.setBackground(getDrawable(ghost));
-        // screenGhost.setAlpha(0);
+        screenGhost.setAlpha(0);
 
         // set screen tint
         screen = findViewById(R.id.screen);
@@ -284,7 +284,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 ghostAnimate();
                 Log.i(LOGTAG, "WHERE R U?");
             }else{
-                // screenGhost.setAlpha(0);
+                screenGhost.setAlpha(0);
                 soundPool.autoPause();
             }
         }
