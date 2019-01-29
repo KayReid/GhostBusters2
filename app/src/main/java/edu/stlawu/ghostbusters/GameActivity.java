@@ -3,6 +3,7 @@ package edu.stlawu.ghostbusters;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.camera2.CameraAccessException;
@@ -147,7 +148,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
     AlertDialog chooseTimerDialog;
     public void CreateTimerOptions() {
-        CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes"};
+        CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes", "TEST: 1 Minute"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setTitle("Choose Timer");
@@ -160,19 +161,29 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                     case 0:
                         // set the ghost goal and timer (10 mins)
                         goalNumber = 5;
+                        ghostGoal.setText(String.valueOf(goalNumber));
                         chosenTime = 600000;
                         break;
 
                     case 1:
                         // 15 mins, goal ghosts = 10
                         goalNumber = 10;
+                        ghostGoal.setText(String.valueOf(goalNumber));
                         chosenTime = 900000;
                         break;
 
                     case 2:
                         // 20 mins, goal ghosts = 15
                         goalNumber = 15;
+                        ghostGoal.setText(String.valueOf(goalNumber));
                         chosenTime = 1200000;
+                        break;
+
+                    case 3:
+                        // TEST: 1 min, goal ghost = 1
+                        goalNumber = 1;
+                        ghostGoal.setText(String.valueOf(goalNumber));
+                        chosenTime = 60000;
                         break;
                 }
 
@@ -215,24 +226,32 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         if(ghostsCaptured < ghostgoal) {
             String loseMessage = "Number of Ghosts You Captured: " + ghostsCaptured + "\n\nGhost Goal: " + ghostgoal + "\n\nYOU LOSE";
             builder.setMessage(loseMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //dialog.cancel();
+                    launchScoreboardActivity();
+
+                }
+            });
         }
 
         if(ghostsCaptured >= ghostgoal) {
             String winMessage = "Number of Ghosts You Captured: " + ghostsCaptured + "\n\nGhost Goal: " + ghostgoal + "\n\nYOU WIN";
             builder.setMessage(winMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //dialog.cancel();
+                    launchScoreboardActivity();
+                }
+            });
         }
         gameOverDialog = builder.create();
         gameOverDialog.show();
+    }
+
+    public void launchScoreboardActivity() {
+        Intent intent = new Intent(this, ScoreboardActivity.class);
+        startActivity(intent);
     }
 
     @Override
