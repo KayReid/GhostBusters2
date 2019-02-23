@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".GameActivity">
 
+    <SurfaceView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <FrameLayout
         android:id="@+id/screen_tint"
         android:layout_width="fill_parent"
@@ -35,6 +41,11 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         />
+
+
+
+
+
 
     <TextView
         android:id="@+id/ghost_count"
@@ -92,5 +103,8 @@
         android:scaleType="centerInside"
         android:padding="12dp"
         android:src="@drawable/flashlight" />
+
+
+
 
 </FrameLayout>

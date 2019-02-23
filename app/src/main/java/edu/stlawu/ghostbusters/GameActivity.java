@@ -6,30 +6,27 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraManager;
+import android.hardware.Camera;
 import android.location.Location;
 import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.media.SoundPool;
 
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-
-import static edu.stlawu.ghostbusters.R.drawable.ghost;
 
 public class GameActivity extends AppCompatActivity implements Observer, MainFragment.OnFragmentInteractionListener{
 
@@ -131,6 +128,41 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         // camera view
         // camera_view = new CameraViewDisplay();
         // camera_view.run();
+
+
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
+        SurfaceHolder surfaceHolder = surfaceView.getHolder();
+
+        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+            private Camera mCamera;
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                mCamera.stopPreview();
+                mCamera.release();
+                mCamera = null;
+            }
+
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                mCamera = Camera.open();
+
+                try {
+                    mCamera.setPreviewDisplay(holder);
+                } catch (IOException exception) {
+                    mCamera.release();
+                    mCamera = null;
+                }
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width,
+                                       int height) {
+                mCamera.startPreview();
+            }
+        });
+
+
+
     }
 
     // displays a cameraView on the view
@@ -332,4 +364,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+
+
 }
