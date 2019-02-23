@@ -148,6 +148,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                 try {
                     mCamera.setPreviewDisplay(holder);
+                    mCamera.setDisplayOrientation(90);
                 } catch (IOException exception) {
                     mCamera.release();
                     mCamera = null;

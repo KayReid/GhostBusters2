@@ -43,10 +43,6 @@
         />
 
 
-
-
-
-
     <TextView
         android:id="@+id/ghost_count"
         android:layout_width="wrap_content"
