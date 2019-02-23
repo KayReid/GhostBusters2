@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private int ghostsCaptured;
     private int ghostWithinRange;
     private int distance;
+    private Chronometer playtimer;
 
     // initialize ghost sound
     private int black = 0;
@@ -79,6 +81,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         // TODO: Create Timer Options: 5, 10, or 20 minutes
         CreateTimerOptions();
+
+        // initialize chronometer
+        playtimer = findViewById(R.id.playtimer);
 
         //ghost screen
         // TODO: if we cannot get both screen to work, we will simplify it to just have a ghost pop up
@@ -196,6 +201,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         goalNumber = 5;
                         ghostGoal.setText(String.valueOf(goalNumber));
                         chosenTime = 600000;
+                        playtimer.start();
+                        playtimer.setFormat("%s");
                         break;
 
                     case 1:
@@ -203,6 +210,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         goalNumber = 10;
                         ghostGoal.setText(String.valueOf(goalNumber));
                         chosenTime = 900000;
+                        playtimer.start();
+                        playtimer.setFormat("%s");
                         break;
 
                     case 2:
@@ -210,6 +219,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         goalNumber = 15;
                         ghostGoal.setText(String.valueOf(goalNumber));
                         chosenTime = 1200000;
+                        playtimer.start();
+                        playtimer.setFormat("%s");
                         break;
 
                     case 3:
@@ -217,6 +228,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                         goalNumber = 1;
                         ghostGoal.setText(String.valueOf(goalNumber));
                         chosenTime = 60000;
+                        playtimer.start();
+                        playtimer.setFormat("%s");
                         break;
                 }
 
@@ -236,7 +249,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
                     @Override
                     public void onFinish() {
-                        GameOver(ghostsCaptured, goalNumber);
+                        playtimer.stop();
+                        String timeplayed=playtimer.getText().toString();
+                        GameOver(ghostsCaptured,goalNumber,timeplayed);
                     }}.start();
 
                 chooseTimerDialog.dismiss();
@@ -247,7 +262,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     }
 
     // Create a Game Over alert box
-    public void GameOver(int ghostsCaptured, int ghostgoal) {
+    public void GameOver(int ghostsCaptured, int ghostgoal, String timeplayed) {
         AlertDialog gameOverDialog;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
@@ -257,7 +272,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
 
         if(ghostsCaptured < ghostgoal) {
-            String loseMessage = "Number of Ghosts You Captured: " + ghostsCaptured + "\n\nGhost Goal: " + ghostgoal + "\n\nYOU LOSE";
+            String loseMessage="Number of Ghosts You Captured:" + ghostsCaptured + "\n\nGhost Goal:" + ghostgoal
+                    + "\n\nTime:" + timeplayed + "\n\nYOU LOSE";
             builder.setMessage(loseMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -269,7 +285,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
 
         if(ghostsCaptured >= ghostgoal) {
-            String winMessage = "Number of Ghosts You Captured: " + ghostsCaptured + "\n\nGhost Goal: " + ghostgoal + "\n\nYOU WIN";
+            String winMessage = "Number of Ghosts You Captured: " + ghostsCaptured + "\n\nGhost Goal: " + ghostgoal
+                    + "\n\nTime:" + timeplayed + "\n\nYOU WIN";
             builder.setMessage(winMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

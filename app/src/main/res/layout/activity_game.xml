@@ -70,6 +70,12 @@
         android:shadowDy="10"
         android:shadowRadius="20"/>
 
+    <Chronometer
+        android:id="@+id/playtimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
+
     <TextView
         android:id="@+id/time_count"
         android:layout_width="wrap_content"
