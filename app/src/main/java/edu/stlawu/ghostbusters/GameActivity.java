@@ -40,11 +40,12 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private ImageButton flashlightButton;
     private Boolean flashLightStatus = false;
     private GhostManager gm = new GhostManager(500);
+    private CountDownTimer countdown;
     private TextView timer = null;
     private TextView ghostGoal = null;
     private int goalNumber;
     private int chosenTime;
-    private int ghostsCaptured;
+    private int ghostsCaptured = 0;
     private int ghostWithinRange;
     private int distance;
     private Chronometer playtimer;
@@ -180,6 +181,20 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
     }
 
+    // Goal and Timer method for each option
+    public void goaltimer(int goalnum, int time) {
+        goalNumber = goalnum;
+        ghostGoal.setText(String.valueOf(goalNumber));
+        chosenTime = time;
+        playtimer.start();
+        playtimer.setFormat("%s");
+        if(ghostsCaptured == goalNumber){
+            countdown.cancel();
+            countdown.onFinish();
+        }
+
+    }
+
     AlertDialog chooseTimerDialog;
     public void CreateTimerOptions() {
         CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes", "TEST: 1 Minute"};
@@ -195,44 +210,28 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 switch(item) {
                     case 0:
                         // set the ghost goal and timer (10 mins)
-                        goalNumber = 5;
-                        ghostGoal.setText(String.valueOf(goalNumber));
-                        chosenTime = 600000;
-                        playtimer.start();
-                        playtimer.setFormat("%s");
+                        goaltimer(5, 600000);
                         break;
 
                     case 1:
                         // 15 mins, goal ghosts = 10
-                        goalNumber = 10;
-                        ghostGoal.setText(String.valueOf(goalNumber));
-                        chosenTime = 900000;
-                        playtimer.start();
-                        playtimer.setFormat("%s");
+                        goaltimer(10, 900000);
                         break;
 
                     case 2:
                         // 20 mins, goal ghosts = 15
-                        goalNumber = 15;
-                        ghostGoal.setText(String.valueOf(goalNumber));
-                        chosenTime = 1200000;
-                        playtimer.start();
-                        playtimer.setFormat("%s");
+                        goaltimer(15, 1200000);
                         break;
 
                     case 3:
                         // TEST: 1 min, goal ghost = 1
-                        goalNumber = 1;
-                        ghostGoal.setText(String.valueOf(goalNumber));
-                        chosenTime = 60000;
-                        playtimer.start();
-                        playtimer.setFormat("%s");
+                        goaltimer(1, 60000);
                         break;
                 }
 
                 // setup timer and change the text
                 ghostGoal.setText(String.valueOf(goalNumber));
-                ghostsCaptured = 0;
+
 
                 CountDownTimer countdown = new CountDownTimer(chosenTime, 1000) {
 
@@ -259,7 +258,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     }
 
     // Create a Game Over alert box
-    public void GameOver(int ghostsCaptured, int ghostgoal, String timeplayed) {
+    public void GameOver(int ghostsCaptured, int ghostgoal, final String timeplayed) {
         AlertDialog gameOverDialog;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
@@ -271,7 +270,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             builder.setMessage(loseMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    launchScoreboardActivity();
+                    launchScoreboardActivity(timeplayed);
                 }
             });
         }
@@ -281,7 +280,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             builder.setMessage(winMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    launchScoreboardActivity();
+                    launchScoreboardActivity(timeplayed);
                 }
             });
         }
@@ -289,8 +288,9 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         gameOverDialog.show();
     }
 
-    public void launchScoreboardActivity() {
+    public void launchScoreboardActivity(String timeplayed) {
         Intent intent = new Intent(this, ScoreboardActivity.class);
+        intent.putExtra("timescore", timeplayed);
         startActivity(intent);
     }
 
@@ -358,6 +358,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         gm.getGhostList().remove(capturedGhost);
         screenGhost.setAlpha(0);
         gm.addGhost();
+        ghostsCaptured += 1;
         //TODO: add capture sound effects and animation
     }
 
