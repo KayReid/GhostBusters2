@@ -363,6 +363,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     // takes index of ghost, removes it, and adds a new one
     public void capture(int capturedGhost){
         gm.getGhostList().remove(capturedGhost);
+        screenGhost.setAlpha(0);
         gm.addGhost();
         //TODO: add capture sound effects and animation
     }
