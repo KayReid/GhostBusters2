@@ -40,7 +40,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
     private ImageButton flashlightButton;
     private Boolean flashLightStatus = false;
     private GhostManager gm = new GhostManager(500);
-    private CountDownTimer countdown;
     private TextView timer = null;
     private TextView ghostGoal = null;
     private int goalNumber;
@@ -112,7 +111,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
             @Override
             public void onClick(View view) {
-                // TODO: in faux flash, YOU ARE CURRENTLY USING THE GHOST VIEW
                 // TODO: if flashlight has been on for more than 3 seconds, turn it off
                 if (flashLightStatus) {
                     screen.setBackgroundColor(Color.RED);
@@ -130,6 +128,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 }
             }
         });
+
+        // TODO: fix camera stuff
         // camera view
         // camera_view = new CameraViewDisplay();
         // camera_view.run();
@@ -166,9 +166,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 mCamera.startPreview();
             }
         });
-
-
-
     }
 
     // displays a cameraView on the view
@@ -183,7 +180,6 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
     }
 
-
     AlertDialog chooseTimerDialog;
     public void CreateTimerOptions() {
         CharSequence[] values = {" 10 Minutes "," 15 Minutes "," 20 Minutes", "TEST: 1 Minute"};
@@ -192,6 +188,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         builder.setTitle("Choose Timer");
         builder.setSingleChoiceItems(values, -1, new DialogInterface.OnClickListener() {
 
+            // TODO: get rid of the duplicates in the switch
             @Override
             public void onClick(DialogInterface dialog, int item) {
 
@@ -237,7 +234,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 ghostGoal.setText(String.valueOf(goalNumber));
                 ghostsCaptured = 0;
 
-                countdown = new CountDownTimer(chosenTime, 1000) {
+                CountDownTimer countdown = new CountDownTimer(chosenTime, 1000) {
 
                     @Override
                     public void onTick(long millisUntilFinished) {
@@ -250,7 +247,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                     @Override
                     public void onFinish() {
                         playtimer.stop();
-                        String timeplayed=playtimer.getText().toString();
+                        String timeplayed = playtimer.getText().toString();
                         GameOver(ghostsCaptured,goalNumber,timeplayed);
                     }}.start();
 
@@ -266,31 +263,24 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         AlertDialog gameOverDialog;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        builder.setTitle("GAME OVER")
-                //.setMessage("Number of Ghosts You Captured: " + ghostsCaptured)
-                .setCancelable(false);
+        builder.setTitle("GAME OVER").setCancelable(false);
 
 
         if(ghostsCaptured < ghostgoal) {
-            String loseMessage="Number of Ghosts You Captured:" + ghostsCaptured + "\n\nGhost Goal:" + ghostgoal
-                    + "\n\nTime:" + timeplayed + "\n\nYOU LOSE";
+            String loseMessage="Number of Ghosts You Captured:" + ghostsCaptured + "\n\nGhost Goal:" + ghostgoal + "\n\nTime:" + timeplayed + "\n\nYOU LOSE";
             builder.setMessage(loseMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //dialog.cancel();
                     launchScoreboardActivity();
-
                 }
             });
         }
 
         if(ghostsCaptured >= ghostgoal) {
-            String winMessage = "Number of Ghosts You Captured: " + ghostsCaptured + "\n\nGhost Goal: " + ghostgoal
-                    + "\n\nTime:" + timeplayed + "\n\nYOU WIN";
+            String winMessage = "Number of Ghosts You Captured: " + ghostsCaptured + "\n\nGhost Goal: " + ghostgoal + "\n\nTime:" + timeplayed + "\n\nYOU WIN";
             builder.setMessage(winMessage).setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //dialog.cancel();
                     launchScoreboardActivity();
                 }
             });
@@ -334,6 +324,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         }
         // unreachable in range of a ghost
         screen.setAlpha(0);
+        Log.i(LOGTAG, "NOT HERE IF TINT");
+
     }
 
     // puts ghost on screen and adds sound
