@@ -65,19 +65,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         // sound
         this.aa = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).setUsage(AudioAttributes.USAGE_GAME).build();
         this.soundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(aa).build();
-        this.black = this.soundPool.load(this, R.raw.black,1); 
-
-
-        // check permissions
-        int PERMISSION_ALL = 1;
-        String[] PERMISSIONS = {
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.CAMERA,
-        };
-
-        if(!hasPermissions(this, PERMISSIONS)){
-            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        }
+        this.black = this.soundPool.load(this, R.raw.black,1);
 
         // TODO: Create Timer Options: 5, 10, or 20 minutes
         CreateTimerOptions();
@@ -132,52 +120,48 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
 
         // TODO: fix camera stuff
         // camera view
-        // camera_view = new CameraViewDisplay();
-        // camera_view.run();
+        camera_view = new CameraViewDisplay();
+        camera_view.run();
 
-
-        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
-        SurfaceHolder surfaceHolder = surfaceView.getHolder();
-
-        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-            private Camera mCamera;
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                mCamera.stopPreview();
-                mCamera.release();
-                mCamera = null;
-            }
-
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                mCamera = Camera.open();
-
-                try {
-                    mCamera.setPreviewDisplay(holder);
-                    mCamera.setDisplayOrientation(90);
-                } catch (IOException exception) {
-                    mCamera.release();
-                    mCamera = null;
-                }
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width,
-                                       int height) {
-                mCamera.startPreview();
-            }
-        });
     }
 
     // displays a cameraView on the view
     class CameraViewDisplay implements Runnable{
 
-        final FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        final SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
 
         @Override
         public void run() {
-            CameraView camera = new CameraView(GameActivity.this);
-            preview.addView(camera);
+            SurfaceHolder surfaceHolder = surfaceView.getHolder();
+
+            surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+                private Camera mCamera;
+                @Override
+                public void surfaceDestroyed(SurfaceHolder holder) {
+                    mCamera.stopPreview();
+                    mCamera.release();
+                    mCamera = null;
+                }
+
+                @Override
+                public void surfaceCreated(SurfaceHolder holder) {
+                    mCamera = Camera.open();
+
+                    try {
+                        mCamera.setPreviewDisplay(holder);
+                        mCamera.setDisplayOrientation(90);
+                    } catch (IOException exception) {
+                        mCamera.release();
+                        mCamera = null;
+                    }
+                }
+
+                @Override
+                public void surfaceChanged(SurfaceHolder holder, int format, int width,
+                                           int height) {
+                    mCamera.startPreview();
+                }
+            });
         }
     }
 
@@ -233,7 +217,7 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
                 ghostGoal.setText(String.valueOf(goalNumber));
 
 
-                CountDownTimer countdown = new CountDownTimer(chosenTime, 1000) {
+                countdown = new CountDownTimer(chosenTime, 1000) {
 
                     @Override
                     public void onTick(long millisUntilFinished) {
@@ -362,22 +346,8 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
         //TODO: add capture sound effects and animation
     }
 
-    public static boolean hasPermissions(Context context, String... permissions) {
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
-
-
-
 }
