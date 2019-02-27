@@ -323,9 +323,10 @@ public class GameActivity extends AppCompatActivity implements Observer, MainFra
             }
         }
         // unreachable in range of a ghost
-        screen.setAlpha(0);
-        Log.i(LOGTAG, "NOT HERE IF TINT");
-
+        if(!withinRange){
+            screen.setAlpha(0);
+            Log.i(LOGTAG, "NOT HERE IF TINT");
+        }
     }
 
     // puts ghost on screen and adds sound
