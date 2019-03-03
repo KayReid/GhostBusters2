@@ -1,113 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GameActivity">
+    tools:context=".GameActivity"
+    android:layout_gravity="center">
 
-    <SurfaceView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/surfaceView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <FrameLayout
-        android:id="@+id/screen_tint"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        />
-
-    <LinearLayout
+    <fragment
+        android:id="@+id/fragment_game"
+        android:name="edu.stlawu.ghostbusters.GameFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/screenGhost"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ghost"
-            />
-
-        <View
-            android:id="@+id/screen"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/camera_preview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        />
-
-
-    <TextView
-        android:id="@+id/ghost_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ghostgoal"
-        android:textSize="45sp"
-        android:textColor="@color/redTwenty"
-        android:shadowColor="@color/colorPrimaryDark"
-        android:shadowDy="10"
-        android:shadowRadius="20"
-        android:fontFamily="@font/bloody"
-
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
-        android:layout_marginTop="20dp"
-        android:text="Timer:"
-        android:fontFamily="@font/bloody"
-        android:textSize="25sp"
-        android:textColor="@color/redTwenty"
-        android:shadowColor="@color/colorPrimaryDark"
-        android:shadowDy="10"
-        android:shadowRadius="20"/>
-
-    <Chronometer
-        android:id="@+id/playtimer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"/>
-
-    <TextView
-        android:id="@+id/time_count"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="280dp"
-        android:text="@string/timer"
-        android:textSize="25sp"
-        android:textColor="@color/redFifty"
-        android:fontFamily="@font/bloody"
-        android:shadowColor="@color/colorPrimaryDark"
-        android:shadowDy="10"
-        android:shadowRadius="20"
-        />
-
-    <ImageButton
-        android:id="@+id/flashlight"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="center_horizontal|center|bottom"
-        android:layout_marginBottom="20dp"
-        android:adjustViewBounds="true"
-        android:background="@drawable/roundedcorner"
-        android:outlineSpotShadowColor="@color/colorPrimaryDark"
-        android:scaleType="centerInside"
-        android:padding="12dp"
-        android:src="@drawable/flashlight" />
-
-
-
+        android:layout_marginTop="0dp"
+        tools:layout="@layout/fragment_game" />
 
 </FrameLayout>
