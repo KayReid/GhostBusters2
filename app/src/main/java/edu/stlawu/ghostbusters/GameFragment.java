@@ -346,7 +346,7 @@ public class GameFragment extends Fragment implements Observer {
                     if (withinRange && distance < 20) {
                         capture(ghostWithinRange);
                     }
-                    Log.i(LOGTAG, "Flash on.");
+                    Log.i(LOGTAG, "Flash on." + screen.getAlpha());
                 }
             }
         });
