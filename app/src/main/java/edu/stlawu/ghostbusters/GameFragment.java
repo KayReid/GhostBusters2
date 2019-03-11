@@ -20,13 +20,13 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -48,10 +48,10 @@ public class GameFragment extends Fragment implements Observer {
     private TextView ghostGoal = null;
     private int goalNumber;
     private int chosenTime;
+    private long initial_milliseconds;
     private int ghostsCaptured = 0;
     private int ghostWithinRange;
     private int distance;
-    private Chronometer playtimer;
     AlertDialog chooseTimerDialog;
 
     // initialize ghost sound
@@ -121,8 +121,6 @@ public class GameFragment extends Fragment implements Observer {
         goalNumber = goalnum;
         ghostGoal.setText(String.valueOf(goalNumber));
         chosenTime = time;
-        playtimer.start();
-        playtimer.setFormat("%s");
         if(ghostsCaptured == goalNumber){
             countdown.cancel();
             countdown.onFinish();
@@ -170,6 +168,7 @@ public class GameFragment extends Fragment implements Observer {
 
                     @Override
                     public void onTick(long millisUntilFinished) {
+                        initial_milliseconds = millisUntilFinished;
                         int seconds = (int) (millisUntilFinished/1000);
                         int minutes = seconds / 60;
                         seconds = seconds % 60;
@@ -178,8 +177,21 @@ public class GameFragment extends Fragment implements Observer {
 
                     @Override
                     public void onFinish() {
-                        playtimer.stop();
-                        String timeplayed = playtimer.getText().toString();
+                        String finaltime = timer.getText().toString();
+
+                        long min = Integer.parseInt(finaltime.substring(0, 2));
+                        long sec = Integer.parseInt(finaltime.substring(3));
+
+                        long t = (min * 60L) + sec;
+
+                        long resultmillis = initial_milliseconds - TimeUnit.SECONDS.toMillis(t);
+
+                        int newsec = (int) (resultmillis/1000);
+                        int newmin = newsec / 60;
+                        newsec = newsec % 60;
+
+                        String timeplayed = String.format("%02d:%02d", newmin, newsec);
+
                         GameOver(ghostsCaptured,goalNumber,timeplayed);
                     }}.start();
 
@@ -304,9 +316,6 @@ public class GameFragment extends Fragment implements Observer {
 
         // create Timer Options: 5, 10, or 20 minutes
         CreateTimerOptions();
-
-        // initialize chronometer
-        playtimer = rootView.findViewById(R.id.playtimer);
 
         //ghost screen
         screenGhost = rootView.findViewById(R.id.screenGhost);
