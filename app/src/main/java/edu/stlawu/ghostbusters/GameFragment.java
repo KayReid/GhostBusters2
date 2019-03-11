@@ -34,6 +34,7 @@ public class GameFragment extends Fragment implements Observer {
 
     private GameFragment.OnFragmentInteractionListener mListener;
     private final static String LOGTAG = MainActivity.class.getSimpleName();
+
     private View screen;
     private View screenGhost;
     private CameraViewDisplay camera_view;
@@ -256,7 +257,7 @@ public class GameFragment extends Fragment implements Observer {
         }
         // unreachable in range of a ghost
         if(!withinRange){
-            screen.setAlpha(0);
+            // screen.setAlpha(0);
             Log.i(LOGTAG, "NOT HERE IF TINT");
         }
     }
@@ -272,7 +273,7 @@ public class GameFragment extends Fragment implements Observer {
     public void tint(int distance){
         if (!flashLightStatus) {
             // screen.getBackground().setAlpha(120 - distance);
-            screen.setAlpha(1);
+            // screen.setAlpha(1);
             Log.i(LOGTAG, "WHERE IS TINT?");
             if(distance < 20) {
                 ghostAnimate();
@@ -299,10 +300,9 @@ public class GameFragment extends Fragment implements Observer {
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        // TODO: fix XML file and look at main frag stuff for builder
         View rootView = inflater.inflate(R.layout.fragment_game, container, false);
 
-        // TODO: Create Timer Options: 5, 10, or 20 minutes
+        // create Timer Options: 5, 10, or 20 minutes
         CreateTimerOptions();
 
         // initialize chronometer
@@ -315,7 +315,7 @@ public class GameFragment extends Fragment implements Observer {
 
         // set screen tint
         screen = rootView.findViewById(R.id.screen);
-        screen.setBackgroundColor(Color.RED);
+        // screen.setBackgroundColor(Color.RED);
         screen.setAlpha(0);
 
         flashlightButton = rootView.findViewById(R.id.flashlight);
@@ -335,12 +335,12 @@ public class GameFragment extends Fragment implements Observer {
             public void onClick(View view) {
                 // TODO: if flashlight has been on for more than 3 seconds, turn it off
                 if (flashLightStatus) {
-                    screen.setBackgroundColor(Color.RED);
+                    // screen.setBackgroundColor(Color.RED);
                     screen.setAlpha(0);
                     flashLightStatus = false;
                     Log.i(LOGTAG, "Flash off.");
                 } else {
-                    screen.setBackgroundColor(Color.WHITE);
+                    // screen.setBackgroundColor(Color.WHITE);
                     screen.setAlpha(0.5f);
                     flashLightStatus = true;
                     if (withinRange && distance < 20) {
